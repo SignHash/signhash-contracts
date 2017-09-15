@@ -14,5 +14,8 @@
   "bugs": {
     "url": "https://github.com/SignHash/signhash-contracts/issues"
   },
-  "homepage": "https://github.com/SignHash/signhash-contracts#readme"
+  "homepage": "https://github.com/SignHash/signhash-contracts#readme",
+  "dependencies": {
+    "truffle": "^3.4.9"
+  }
 }
