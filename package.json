@@ -4,7 +4,8 @@
   "description": "SignHash smart contracts",
   "scripts": {
     "test": "tsc && truffle test",
-    "compile": "truffle compile"
+    "compile": "truffle compile",
+    "seed": "testrpc"
   },
   "repository": {
     "type": "git",
