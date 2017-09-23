@@ -12,15 +12,15 @@
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "rootDirs": [
-        "test",
-        "migrations"
+      "test",
+      "migrations"
     ],
     "typeRoots": [
       "./node_modules/@types",
       "./typings"
     ],
     "types": [
-        "mocha"
+      "mocha"
     ],
     "lib": [
       "es2016"

@@ -10,7 +10,7 @@
     "test:run": "truffle test --contracts_build_directory .cache/contracts",
     "seed": "testrpc",
     "lint": "npm-run-all lint:solium lint:tslint",
-    "lint:tslint": "tslint migrations/*.ts test/*.ts",
+    "lint:tslint": "tslint *.ts migrations/*.ts test/*.ts",
     "lint:solium": "solium --dir contracts"
   },
   "repository": {
