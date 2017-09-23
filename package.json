@@ -3,11 +3,15 @@
   "version": "0.0.1",
   "description": "SignHash smart contracts",
   "scripts": {
-    "test": "tsc && truffle compile --contracts_build_directory .cache/test/contracts && truffle test --contracts_build_directory .cache/test/contracts",
-    "compile": "truffle compile",
+    "compile": "npm-run-all compile:sol compile:ts",
+    "compile:sol": "truffle compile --contracts_build_directory .cache/contracts",
+    "compile:ts": "tsc",
+    "test": "npm-run-all compile test:run",
+    "test:run": "truffle test --contracts_build_directory .cache/contracts",
     "seed": "testrpc",
-    "tslint": "tslint migrations/*.ts test/*.ts",
-    "solium": "solium --dir contracts"
+    "lint": "npm-run-all lint:solium lint:tslint",
+    "lint:tslint": "tslint migrations/*.ts test/*.ts",
+    "lint:solium": "solium --dir contracts"
   },
   "repository": {
     "type": "git",
@@ -27,6 +31,7 @@
     "@types/chai": "^4.0.4",
     "@types/mocha": "^2.2.43",
     "ethereumjs-testrpc": "^4.1.3",
+    "npm-run-all": "^4.1.1",
     "solium": "^0.5.5",
     "tslint": "^5.7.0",
     "typescript": "^2.5.2",
