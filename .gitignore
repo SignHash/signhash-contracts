@@ -1,3 +1,6 @@
+# Contracts cache
+.cache
+
 # tsc generated files
 *.map
 *.js

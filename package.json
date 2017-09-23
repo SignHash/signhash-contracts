@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "SignHash smart contracts",
   "scripts": {
-    "test": "tsc && truffle test",
+    "test": "tsc && truffle compile --contracts_build_directory .cache/test/contracts && truffle test --contracts_build_directory .cache/test/contracts",
     "compile": "truffle compile",
     "seed": "testrpc",
     "tslint": "tslint migrations/*.ts test/*.ts",
