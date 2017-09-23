@@ -1,3 +1,7 @@
+# tsc generated files
+*.map
+*.js
+
 # Logs
 logs
 *.log
