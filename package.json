@@ -3,7 +3,20 @@
   "version": "0.0.1",
   "description": "SignHash smart contracts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "npm-run-all compile:sol compile:ts",
+    "compile:sol": "truffle compile --contracts_build_directory .cache/contracts",
+    "compile:ts": "tsc",
+    "test": "npm-run-all compile test:run",
+    "test:run": "truffle test --contracts_build_directory .cache/contracts",
+    "seed": "testrpc",
+    "lint": "npm-run-all lint:solium lint:tslint",
+    "lint:tslint": "tslint *.ts migrations/*.ts test/*.ts",
+    "lint:solium": "solium --dir contracts",
+    "format": "prettier --write *.json *.ts migrations/*.ts test/*.ts",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,json}": ["format", "git add"]
   },
   "repository": {
     "type": "git",
@@ -17,5 +30,19 @@
   "homepage": "https://github.com/SignHash/signhash-contracts#readme",
   "dependencies": {
     "truffle": "^3.4.9"
+  },
+  "devDependencies": {
+    "@types/bignumber.js": "^4.0.3",
+    "@types/chai": "^4.0.4",
+    "@types/mocha": "^2.2.43",
+    "ethereumjs-testrpc": "^4.1.3",
+    "husky": "^0.14.3",
+    "lint-staged": "^4.2.2",
+    "npm-run-all": "^4.1.1",
+    "prettier": "^1.7.0",
+    "solium": "^0.5.5",
+    "tslint": "^5.7.0",
+    "typescript": "^2.5.2",
+    "web3-typescript-typings": "^0.6.0"
   }
 }
