@@ -1,19 +1,29 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "sourceMap": true,
-        "target": "es6",
-        "typeRoots" : ["./node_modules/@types", "./typings"],
-        "types": [
-            "mocha"
-        ]
-    },
-    "include": [
-        "./node_modules/web3-typescript-typings/index.d.ts"
-    ],
+  "compileOnSave": false,
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": false,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "preserveConstEnums": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
     "rootDirs": [
-        "test"
+        "test",
+        "migrations"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./typings"
+    ],
+    "types": [
+        "mocha"
+    ],
+    "lib": [
+      "es2016"
     ]
+  }
 }
