@@ -1,4 +1,4 @@
-const Migrations = artifacts.require("./Migrations.sol");
+const Migrations = artifacts.require('./Migrations.sol');
 
 async function deploy(deployer): Promise<void> {
   await deployer.deploy(Migrations);
