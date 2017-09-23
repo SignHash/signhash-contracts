@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "target": "es6",
+        "typeRoots" : ["./node_modules/@types", "./typings"],
+        "types": [
+            "mocha"
+        ]
+    },
+    "include": [
+        "./node_modules/web3-typescript-typings/index.d.ts"
+    ],
+    "rootDirs": [
+        "test"
+    ]
+}
