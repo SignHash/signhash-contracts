@@ -4,7 +4,8 @@
   "jsRules": {},
   "rules": {
     "indent": [true, "spaces", 2],
-    "quotemark": [true, "single"]
+    "quotemark": [true, "single"],
+    "trailing-comma": false
   },
   "rulesDirectory": []
 }
