@@ -6,7 +6,8 @@
     "indent": [true, "spaces", 2],
     "quotemark": [true, "single"],
     "trailing-comma": false,
-    "arrow-parens": false
+    "arrow-parens": false,
+    "interface-name": [true, "never-prefix"]
   },
   "rulesDirectory": []
 }

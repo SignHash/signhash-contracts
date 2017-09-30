@@ -1,39 +1,39 @@
-declare interface IContract<T> {
+declare interface Contract<T> {
   address: string;
   deployed(): Promise<T>;
 }
 
-declare interface IMigrationsContract extends IContract<IMigrations> {
-  'new'(): Promise<IMigrations>;
+declare interface MigrationsContract extends Contract<Migrations> {
+  'new'(): Promise<Migrations>;
 }
 
-declare interface ISignHashContract extends IContract<ISignHash> {
-  'new'(): Promise<ISignHash>;
+declare interface SignHashContract extends Contract<SignHash> {
+  'new'(): Promise<SignHash>;
 }
 
-declare interface ISignHash {
+declare interface SignHash {
   sign(hash: string): Promise<void>;
   getSigners(hash: string): Promise<string[]>;
 }
 
-declare interface IMigrations {
+declare interface Migrations {
   setCompleted(completed: number): Promise<void>;
   upgrade(address: string): Promise<void>;
 }
 
-declare interface IArtifacts {
-  require(name: './Migrations.sol'): IMigrationsContract;
-  require(name: './SignHash.sol'): ISignHashContract;
+declare interface Artifacts {
+  require(name: './Migrations.sol'): MigrationsContract;
+  require(name: './SignHash.sol'): SignHashContract;
 }
 
-declare interface IDeployer extends Promise<void> {
-  deploy<T>(contract: IContract<T>): void;
+declare interface Deployer extends Promise<void> {
+  deploy<T>(contract: Contract<T>): void;
 }
 
-interface IContractContextDefinition extends Mocha.IContextDefinition {
+interface ContractContextDefinition extends Mocha.IContextDefinition {
   (description: string, callback: (accounts: string[]) => void): Mocha.ISuite;
 }
 
-declare var artifacts: IArtifacts;
-declare var contract: IContractContextDefinition;
+declare var artifacts: Artifacts;
+declare var contract: ContractContextDefinition;
 declare var assert: Chai.Assert;
