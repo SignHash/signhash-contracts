@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "SignHash smart contracts",
   "scripts": {
-    "compile": "npm-run-all compile:sol compile:ts",
+    "compile": "npm-run-all compile:ts compile:sol",
     "compile:sol": "truffle compile --contracts_build_directory .cache/contracts",
     "compile:ts": "tsc",
     "test": "npm-run-all compile test:run",

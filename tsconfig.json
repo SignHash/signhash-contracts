@@ -11,5 +11,5 @@
     "types": ["bignumber.js", "chai", "mocha"]
   },
   "lib": ["es2015"],
-  "include": ["./globals.d.ts", "./test/**/*", "./migrations/**/*"]
+  "include": ["./truffle.ts", "./globals.d.ts", "./test/**/*", "./migrations/**/*"]
 }
