@@ -1,4 +1,4 @@
-const SignHash = artifacts.require('./SignHash.sol');
+const SignHashContract = artifacts.require('./SignHash.sol');
 
 contract('SignHash', accounts => {
   const ACCOUNT = accounts[0];
@@ -7,7 +7,7 @@ contract('SignHash', accounts => {
   let instance: ISignHash;
 
   beforeEach(async () => {
-    instance = (await SignHash.new()) as ISignHash;
+    instance = (await SignHashContract.new()) as ISignHash;
   });
 
   describe('#sign', () => {

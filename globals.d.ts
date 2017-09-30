@@ -1,23 +1,33 @@
-declare interface IContract {
+declare interface IContract<T> {
   address: string;
-  new: (...params: any[]) => Promise<IContractInstance>;
+  deployed(): Promise<T>;
 }
 
-declare interface IContractInstance {
-  address: string;
+declare interface IMigrationsContract extends IContract<IMigrations> {
+  'new'(): Promise<IMigrations>;
 }
 
-declare interface ISignHash extends IContractInstance {
-  sign: (hash: string) => Promise<void>;
-  getSigners: (hash: string) => Promise<string[]>;
+declare interface ISignHashContract extends IContract<ISignHash> {
+  'new'(): Promise<ISignHash>;
+}
+
+declare interface ISignHash {
+  sign(hash: string): Promise<void>;
+  getSigners(hash: string): Promise<string[]>;
+}
+
+declare interface IMigrations {
+  setCompleted(completed: number): Promise<void>;
+  upgrade(address: string): Promise<void>;
 }
 
 declare interface IArtifacts {
-  require: (path: string) => IContract;
+  require(name: './Migrations.sol'): IMigrationsContract;
+  require(name: './SignHash.sol'): ISignHashContract;
 }
 
 declare interface IDeployer extends Promise<void> {
-  deploy: (contract: IContract) => void;
+  deploy<T>(contract: IContract<T>): void;
 }
 
 interface IContractContextDefinition extends Mocha.IContextDefinition {
