@@ -5,7 +5,8 @@
   "rules": {
     "indent": [true, "spaces", 2],
     "quotemark": [true, "single"],
-    "trailing-comma": false
+    "trailing-comma": false,
+    "arrow-parens": false
   },
   "rulesDirectory": []
 }
