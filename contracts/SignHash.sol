@@ -6,6 +6,7 @@ contract SignHash {
     //--- Storage
 
     mapping (bytes32 => address[]) private hashSigners;
+    mapping (address => mapping (string => string)) private signerProofs;
 
     //--- Constructor
 
@@ -14,6 +15,7 @@ contract SignHash {
     //--- Events
 
     event HashSigned(bytes32 indexed hash, address indexed signer);
+    event SignerProved(address indexed signer, string method, string value);
 
     //--- Public mutable functions
 
@@ -26,9 +28,22 @@ contract SignHash {
         HashSigned(hash, msg.sender);
     }
 
+    function prove(string method, string value) {
+        require(bytes(method).length > 0);
+        require(bytes(value).length > 0);
+
+        signerProofs[msg.sender][method] = value;
+
+        SignerProved(msg.sender, method, value);
+    }
+
     //--- Public constant functions
 
     function getSigners(bytes32 hash) public constant returns (address[]) {
         return hashSigners[hash];
+    }
+
+    function getProof(address signer, string method) public constant returns (string) {
+        return signerProofs[signer][method];
     }
 }
