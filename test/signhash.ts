@@ -1,4 +1,4 @@
-import { range, forEach, contains } from 'ramda';
+import { contains, forEach, range } from 'ramda';
 import { assertThrowsInvalidOpcode, findLastLog } from './helpers';
 
 const SignHashContract = artifacts.require('./SignHash.sol');
@@ -40,12 +40,13 @@ contract('SignHash', accounts => {
       const event: HashSigned = log.args;
 
       assert.equal(event.hash, HASH);
-      assert.equal(event.signer, accounts[0]);
+      assert.equal(event.signer, signer);
     });
 
     it('should reject empty hash', async () => {
+      const signer = accounts[0];
       await assertThrowsInvalidOpcode(async () => {
-        await instance.sign('', { from: accounts[0] });
+        await instance.sign('', { from: signer });
       });
     });
   });
