@@ -4,12 +4,17 @@
     "noImplicitAny": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "es6",
+    "target": "es2017",
     "baseUrl": ".",
     "strict": true,
     "typeRoots": ["./node_modules/@types"],
     "types": ["bignumber.js", "chai", "mocha"]
   },
   "lib": ["es2015"],
-  "include": ["./truffle.ts", "./globals.d.ts", "./test/**/*", "./migrations/**/*"]
+  "include": [
+    "./truffle.ts",
+    "./globals.d.ts",
+    "./test/**/*",
+    "./migrations/**/*"
+  ]
 }

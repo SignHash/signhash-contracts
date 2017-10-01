@@ -4,7 +4,8 @@
   "description": "SignHash smart contracts",
   "scripts": {
     "compile": "npm-run-all compile:ts compile:sol",
-    "compile:sol": "truffle compile --contracts_build_directory .cache/contracts",
+    "compile:sol":
+      "truffle compile --contracts_build_directory .cache/contracts",
     "compile:ts": "tsc",
     "test": "npm-run-all compile test:run",
     "test:run": "truffle test --contracts_build_directory .cache/contracts",
@@ -44,7 +45,6 @@
     "ramda": "^0.24.1",
     "solium": "^0.5.5",
     "tslint": "^5.7.0",
-    "typescript": "^2.5.2",
-    "web3-typescript-typings": "^0.6.0"
+    "typescript": "^2.5.2"
   }
 }
