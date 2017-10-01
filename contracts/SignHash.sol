@@ -18,6 +18,8 @@ contract SignHash {
     //--- Public mutable functions
 
     function sign(bytes32 hash) {
+        require(hash != bytes32(0));
+
         address[] storage signers = hashSigners[hash];
         signers.push(msg.sender);
 

@@ -11,14 +11,20 @@ declare interface SignHashContract extends Contract<SignHash> {
   'new'(): Promise<SignHash>;
 }
 
+declare type TransactionOptions = {
+  from?: string;
+  gas?: number;
+  gasPrice?: number;
+};
+
 declare interface SignHash {
-  sign(hash: string): Promise<void>;
+  sign(hash: string, options?: TransactionOptions): Promise<void>;
   getSigners(hash: string): Promise<string[]>;
 }
 
 declare interface Migrations {
-  setCompleted(completed: number): Promise<void>;
-  upgrade(address: string): Promise<void>;
+  setCompleted(completed: number, options?: TransactionOptions): Promise<void>;
+  upgrade(address: string, options?: TransactionOptions): Promise<void>;
 }
 
 declare interface Artifacts {
