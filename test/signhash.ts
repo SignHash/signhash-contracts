@@ -1,10 +1,10 @@
 import { range, forEach, contains } from 'ramda';
-import { assertThrowsInvalidOpcode } from './helpers';
+import { assertThrowsInvalidOpcode, findLastLog } from './helpers';
 
 const SignHashContract = artifacts.require('./SignHash.sol');
 
 contract('SignHash', accounts => {
-  const HASH = '43df940fc163216801a40c010caccb0764c0bc8c46f30913e89865fb741d37e6';
+  const HASH = '0x43df940fc163216801a40c010caccb0764c0bc8c46f30913e89865fb741d37e6';
 
   let instance: SignHash;
 
@@ -14,11 +14,12 @@ contract('SignHash', accounts => {
 
   describe('#sign', () => {
     it('should add sender to the list of signers', async () => {
-      await instance.sign(HASH, { from: accounts[0] });
+      const signer = accounts[0];
+      await instance.sign(HASH, { from: signer });
 
       const signers = await instance.getSigners(HASH);
       assert.equal(signers.length, 1);
-      assert.equal(signers[0], accounts[0]);
+      assert.equal(signers[0], signer);
     });
 
     it('should add multiple senders to the list of signers', async () => {
@@ -30,6 +31,16 @@ contract('SignHash', accounts => {
       assert.equal(signers.length, count);
 
       forEach(i => assert.isTrue(contains(accounts[i], signers)), seq);
+    });
+
+    it('should emit HashSigned event', async () => {
+      const signer = accounts[0];
+      const trans = await instance.sign(HASH, { from: signer });
+      const log = findLastLog(trans, 'HashSigned');
+      const event: HashSigned = log.args;
+
+      assert.equal(event.hash, HASH);
+      assert.equal(event.signer, accounts[0]);
     });
 
     it('should reject empty hash', async () => {
