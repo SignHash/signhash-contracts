@@ -54,7 +54,7 @@ declare interface SignHashContract extends Contract<SignHash> {
 declare interface SignHash {
   sign(hash: string, options?: TransactionOptions): Promise<TransactionResult>;
 
-  prove(
+  addProof(
     method: string,
     value: string,
     options?: TransactionOptions
@@ -65,12 +65,12 @@ declare interface SignHash {
   getProof(signer: string, method: string): Promise<string>;
 }
 
-declare interface HashSigned {
+declare interface Signed {
   hash: string;
   signer: string;
 }
 
-declare interface SignerProved {
+declare interface ProofAdded {
   signer: string;
   method: string;
   value: string;

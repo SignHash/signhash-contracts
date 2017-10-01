@@ -35,11 +35,11 @@ contract('SignHash', accounts => {
       forEach(i => assert.isTrue(contains(accounts[i], signers)), seq);
     });
 
-    it('should emit HashSigned event', async () => {
+    it('should emit Signed event', async () => {
       const signer = accounts[0];
       const trans = await instance.sign(HASH, { from: signer });
-      const log = findLastLog(trans, 'HashSigned');
-      const event: HashSigned = log.args;
+      const log = findLastLog(trans, 'Signed');
+      const event: Signed = log.args;
 
       assert.equal(event.hash, HASH);
       assert.equal(event.signer, signer);
@@ -53,12 +53,12 @@ contract('SignHash', accounts => {
     });
   });
 
-  describe('#prove', () => {
+  describe('#addProof', () => {
     it('should add proof', async () => {
       const signer = accounts[0];
       const method = 'http';
       const value = 'example.com';
-      await instance.prove(method, value, { from: signer });
+      await instance.addProof(method, value, { from: signer });
 
       const proof = await instance.getProof(signer, method);
       assert.equal(proof, value);
@@ -83,7 +83,7 @@ contract('SignHash', accounts => {
 
       await Promise.all(
         proofs.map(proof =>
-          instance.prove(proof.method, proof.value, { from: signer })
+          instance.addProof(proof.method, proof.value, { from: signer })
         )
       );
 
@@ -102,20 +102,20 @@ contract('SignHash', accounts => {
       const method = 'http';
       const value = 'example.com';
       const newValue = 'another.com';
-      await instance.prove(method, value, { from: signer });
-      await instance.prove(method, newValue, { from: signer });
+      await instance.addProof(method, value, { from: signer });
+      await instance.addProof(method, newValue, { from: signer });
 
       const proof = await instance.getProof(signer, method);
       assert.equal(proof, newValue);
     });
 
-    it('should emit SignerProved event', async () => {
+    it('should emit ProofAdded event', async () => {
       const signer = accounts[0];
       const method = 'http';
       const value = 'example.com';
-      const trans = await instance.prove(method, value, { from: signer });
-      const log = findLastLog(trans, 'SignerProved');
-      const event: SignerProved = log.args;
+      const trans = await instance.addProof(method, value, { from: signer });
+      const log = findLastLog(trans, 'ProofAdded');
+      const event: ProofAdded = log.args;
 
       assert.equal(event.signer, signer);
       assert.equal(event.method, method);
@@ -128,7 +128,7 @@ contract('SignHash', accounts => {
       const value = 'test';
 
       await assertThrowsInvalidOpcode(async () => {
-        await instance.prove(method, value, { from: signer });
+        await instance.addProof(method, value, { from: signer });
       });
     });
 
@@ -138,7 +138,7 @@ contract('SignHash', accounts => {
       const value = '';
 
       await assertThrowsInvalidOpcode(async () => {
-        await instance.prove(method, value, { from: signer });
+        await instance.addProof(method, value, { from: signer });
       });
     });
   });
