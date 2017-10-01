@@ -1,3 +1,4 @@
+import { range, forEach, contains } from 'ramda';
 import { assertThrowsInvalidOpcode } from './helpers';
 
 const SignHashContract = artifacts.require('./SignHash.sol');
@@ -22,16 +23,13 @@ contract('SignHash', accounts => {
 
     it('should add multiple senders to the list of signers', async () => {
       const count = 5;
-      for (let i = 0; i < count; i++) {
-        await instance.sign(HASH, { from: accounts[i] });
-      }
+      const seq = range(0, count);
+      await Promise.all(seq.map(i => instance.sign(HASH, { from: accounts[i] })));
 
       const signers = await instance.getSigners(HASH);
       assert.equal(signers.length, count);
 
-      for (let i = 0; i < count; i++) {
-        assert.equal(signers[i], accounts[i]);
-      }
+      forEach(i => assert.isTrue(contains(accounts[i], signers)), seq);
     });
 
     it('should reject empty hash', async () => {
