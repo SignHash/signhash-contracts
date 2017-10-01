@@ -3,6 +3,41 @@ declare interface Contract<T> {
   deployed(): Promise<T>;
 }
 
+declare type TransactionOptions = {
+  from?: string;
+  gas?: number;
+  gasPrice?: number;
+};
+
+declare type TransactionReceipt = {
+  transactionHash: string;
+  transactionIndex: number;
+  blockHash: string;
+  blockNumber: number;
+  gasUsed: number;
+  cumulativeGasUsed: number;
+  contractAddress: string | null;
+  logs: [TransactionLog];
+};
+
+declare type TransactionLog = {
+  logIndex: number;
+  transactionIndex: number;
+  transactionHash: string;
+  blockHash: string;
+  blockNumber: number;
+  address: string;
+  type: 'mined';
+  event: string;
+  args: any;
+};
+
+declare type TransactionResult = {
+  tx: string;
+  receipt: TransactionReceipt;
+  logs: [TransactionLog];
+};
+
 declare interface MigrationsContract extends Contract<Migrations> {
   'new'(): Promise<Migrations>;
 }
@@ -11,20 +46,19 @@ declare interface SignHashContract extends Contract<SignHash> {
   'new'(): Promise<SignHash>;
 }
 
-declare type TransactionOptions = {
-  from?: string;
-  gas?: number;
-  gasPrice?: number;
-};
-
 declare interface SignHash {
-  sign(hash: string, options?: TransactionOptions): Promise<void>;
+  sign(hash: string, options?: TransactionOptions): Promise<TransactionResult>;
   getSigners(hash: string): Promise<string[]>;
 }
 
+declare interface HashSigned {
+  hash: string;
+  signer: string;
+}
+
 declare interface Migrations {
-  setCompleted(completed: number, options?: TransactionOptions): Promise<void>;
-  upgrade(address: string, options?: TransactionOptions): Promise<void>;
+  setCompleted(completed: number, options?: TransactionOptions): Promise<TransactionResult>;
+  upgrade(address: string, options?: TransactionOptions): Promise<TransactionResult>;
 }
 
 declare interface Artifacts {

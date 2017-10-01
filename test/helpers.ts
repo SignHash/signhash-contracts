@@ -1,3 +1,5 @@
+import { findLast, propEq } from 'ramda';
+
 export async function assertThrowsInvalidOpcode(func: () => void) {
   try {
     await func();
@@ -16,4 +18,8 @@ export function assertInvalidOpcode(error: { message: string }) {
   } else {
     assert.fail(error, {}, 'Expected to throw an error');
   }
+}
+
+export function findLastLog(trans: TransactionResult, event: string): TransactionLog {
+  return findLast(propEq('event', event))(trans.logs);
 }
