@@ -1,3 +1,8 @@
+declare interface Web3 {
+  toAscii(hex: string): string;
+  fromAscii(ascii: string, padding?: number): string;
+}
+
 declare interface Contract<T> {
   address: string;
   deployed(): Promise<T>;
@@ -77,3 +82,4 @@ interface ContractContextDefinition extends Mocha.IContextDefinition {
 declare var artifacts: Artifacts;
 declare var contract: ContractContextDefinition;
 declare var assert: Chai.Assert;
+declare var web3: Web3;

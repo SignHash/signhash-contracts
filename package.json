@@ -44,7 +44,6 @@
     "ramda": "^0.24.1",
     "solium": "^0.5.5",
     "tslint": "^5.7.0",
-    "typescript": "^2.5.2",
-    "web3-typescript-typings": "^0.6.0"
+    "typescript": "^2.5.2"
   }
 }
