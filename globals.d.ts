@@ -53,8 +53,15 @@ declare interface SignHashContract extends Contract<SignHash> {
 
 declare interface SignHash {
   sign(hash: string, options?: TransactionOptions): Promise<TransactionResult>;
-  prove(method: string, value: string, options?: TransactionOptions): Promise<TransactionResult>;
+
+  prove(
+    method: string,
+    value: string,
+    options?: TransactionOptions
+  ): Promise<TransactionResult>;
+
   getSigners(hash: string): Promise<string[]>;
+
   getProof(signer: string, method: string): Promise<string>;
 }
 
@@ -70,8 +77,15 @@ declare interface SignerProved {
 }
 
 declare interface Migrations {
-  setCompleted(completed: number, options?: TransactionOptions): Promise<TransactionResult>;
-  upgrade(address: string, options?: TransactionOptions): Promise<TransactionResult>;
+  setCompleted(
+    completed: number,
+    options?: TransactionOptions
+  ): Promise<TransactionResult>;
+
+  upgrade(
+    address: string,
+    options?: TransactionOptions
+  ): Promise<TransactionResult>;
 }
 
 declare interface Artifacts {

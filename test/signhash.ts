@@ -2,14 +2,14 @@ import { contains, forEach, range } from 'ramda';
 import { assertThrowsInvalidOpcode, findLastLog } from './helpers';
 
 const SignHashContract = artifacts.require('./SignHash.sol');
+const HASH =
+  '0x43df940fc163216801a40c010caccb0764c0bc8c46f30913e89865fb741d37e6';
 
 contract('SignHash', accounts => {
-  const HASH = '0x43df940fc163216801a40c010caccb0764c0bc8c46f30913e89865fb741d37e6';
-
   let instance: SignHash;
 
   beforeEach(async () => {
-    instance = (await SignHashContract.new()) as SignHash;
+    instance = await SignHashContract.new();
   });
 
   describe('#sign', () => {
@@ -25,7 +25,9 @@ contract('SignHash', accounts => {
     it('should add multiple senders', async () => {
       const count = 5;
       const seq = range(0, count);
-      await Promise.all(seq.map(i => instance.sign(HASH, { from: accounts[i] })));
+      await Promise.all(
+        seq.map(i => instance.sign(HASH, { from: accounts[i] }))
+      );
 
       const signers = await instance.getSigners(HASH);
       assert.equal(signers.length, count);
@@ -79,8 +81,20 @@ contract('SignHash', accounts => {
         }
       ];
 
-      await Promise.all(proofs.map(x => instance.prove(x.method, x.value, { from: signer })));
-      await Promise.all(proofs.map(async x => assert.equal(await instance.getProof(signer, x.method), x.value)));
+      await Promise.all(
+        proofs.map(proof =>
+          instance.prove(proof.method, proof.value, { from: signer })
+        )
+      );
+
+      await Promise.all(
+        proofs.map(async proof =>
+          assert.equal(
+            await instance.getProof(signer, proof.method),
+            proof.value
+          )
+        )
+      );
     });
 
     it('should override proof', async () => {
@@ -112,6 +126,7 @@ contract('SignHash', accounts => {
       const signer = accounts[0];
       const method = '';
       const value = 'test';
+
       await assertThrowsInvalidOpcode(async () => {
         await instance.prove(method, value, { from: signer });
       });
@@ -121,6 +136,7 @@ contract('SignHash', accounts => {
       const signer = accounts[0];
       const method = 'http';
       const value = '';
+
       await assertThrowsInvalidOpcode(async () => {
         await instance.prove(method, value, { from: signer });
       });
