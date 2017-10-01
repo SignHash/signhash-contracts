@@ -60,6 +60,11 @@ declare interface SignHash {
     options?: TransactionOptions
   ): Promise<TransactionResult>;
 
+  removeProof(
+    method: string,
+    options?: TransactionOptions
+  ): Promise<TransactionResult>;
+
   getSigners(hash: string): Promise<string[]>;
 
   getProof(signer: string, method: string): Promise<string>;
@@ -74,6 +79,11 @@ declare interface ProofAdded {
   signer: string;
   method: string;
   value: string;
+}
+
+declare interface ProofRemoved {
+  signer: string;
+  method: string;
 }
 
 declare interface Migrations {
