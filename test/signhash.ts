@@ -1,71 +1,72 @@
-import { contains, forEach, range } from 'ramda';
 import { assertThrowsInvalidOpcode, findLastLog } from './helpers';
 
 const SignHashContract = artifacts.require('./SignHash.sol');
-const HASH =
-  '0x43df940fc163216801a40c010caccb0764c0bc8c46f30913e89865fb741d37e6';
 
 contract('SignHash', accounts => {
+  const defaultAccount = accounts[0];
+  const otherAccount = accounts[1];
+  const deployer = accounts[9];
+  const hash = web3.sha3('test');
+
   let instance: SignHash;
 
   beforeEach(async () => {
-    instance = await SignHashContract.new();
+    instance = await SignHashContract.new({
+      from: deployer
+    });
+  });
+
+  describe('#ctor', () => {
+    it('should start with empty list of signers', async () => {
+      const signers = await instance.getSigners(hash);
+      assert.deepEqual(signers, []);
+    });
   });
 
   describe('#sign', () => {
-    it('should add sender', async () => {
-      const signer = accounts[0];
-      await instance.sign(HASH, { from: signer });
+    it('should add signer', async () => {
+      await instance.sign(hash);
 
-      const signers = await instance.getSigners(HASH);
-      assert.equal(signers.length, 1);
-      assert.equal(signers[0], signer);
+      const signers = await instance.getSigners(hash);
+      assert.deepEqual(signers, [defaultAccount]);
     });
 
-    it('should add multiple senders', async () => {
-      const count = 5;
-      const seq = range(0, count);
+    it('should add multiple signers', async () => {
       await Promise.all(
-        seq.map(i => instance.sign(HASH, { from: accounts[i] }))
+        accounts.map(account => instance.sign(hash, { from: account }))
       );
 
-      const signers = await instance.getSigners(HASH);
-      assert.equal(signers.length, count);
-
-      forEach(i => assert.isTrue(contains(accounts[i], signers)), seq);
+      const signers = await instance.getSigners(hash);
+      assert.deepEqual(signers.sort(), accounts.sort());
     });
 
     it('should emit Signed event', async () => {
-      const signer = accounts[0];
-      const trans = await instance.sign(HASH, { from: signer });
+      const trans = await instance.sign(hash);
       const log = findLastLog(trans, 'Signed');
       const event: Signed = log.args;
 
-      assert.equal(event.hash, HASH);
-      assert.equal(event.signer, signer);
+      assert.equal(event.hash, hash);
+      assert.equal(event.signer, defaultAccount);
     });
 
-    it('should reject empty hash', async () => {
-      const signer = accounts[0];
+    it('should throw when hash is empty', async () => {
       await assertThrowsInvalidOpcode(async () => {
-        await instance.sign('', { from: signer });
+        await instance.sign('');
       });
     });
   });
 
   describe('#addProof', () => {
-    it('should add proof', async () => {
-      const signer = accounts[0];
+    it('should add proof method', async () => {
       const method = 'http';
       const value = 'example.com';
-      await instance.addProof(method, value, { from: signer });
+      await instance.addProof(method, value);
 
-      const proof = await instance.getProof(signer, method);
+      const proof = await instance.getProof(defaultAccount, method);
       assert.equal(proof, value);
     });
 
-    it('should add multiple proofs', async () => {
-      const signer = accounts[0];
+    it('should add multiple proof methods', async () => {
       const proofs = [
         {
           method: 'http',
@@ -82,64 +83,126 @@ contract('SignHash', accounts => {
       ];
 
       await Promise.all(
-        proofs.map(proof =>
-          instance.addProof(proof.method, proof.value, { from: signer })
-        )
+        proofs.map(proof => instance.addProof(proof.method, proof.value))
       );
 
-      await Promise.all(
-        proofs.map(async proof =>
-          assert.equal(
-            await instance.getProof(signer, proof.method),
-            proof.value
-          )
-        )
+      const readProofs = await Promise.all(
+        proofs.map(async proof => {
+          return {
+            method: proof.method,
+            value: await instance.getProof(defaultAccount, proof.method)
+          };
+        })
       );
+
+      assert.deepEqual(readProofs, proofs);
     });
 
-    it('should override proof', async () => {
-      const signer = accounts[0];
+    it('should override proof method', async () => {
       const method = 'http';
       const value = 'example.com';
       const newValue = 'another.com';
-      await instance.addProof(method, value, { from: signer });
-      await instance.addProof(method, newValue, { from: signer });
+      await instance.addProof(method, value);
+      await instance.addProof(method, newValue);
 
-      const proof = await instance.getProof(signer, method);
+      const proof = await instance.getProof(defaultAccount, method);
       assert.equal(proof, newValue);
     });
 
     it('should emit ProofAdded event', async () => {
-      const signer = accounts[0];
       const method = 'http';
       const value = 'example.com';
-      const trans = await instance.addProof(method, value, { from: signer });
+      const trans = await instance.addProof(method, value);
       const log = findLastLog(trans, 'ProofAdded');
       const event: ProofAdded = log.args;
 
-      assert.equal(event.signer, signer);
+      assert.equal(event.signer, defaultAccount);
       assert.equal(event.method, method);
       assert.equal(event.value, value);
     });
 
-    it('should reject empty method proof', async () => {
-      const signer = accounts[0];
+    it('should throw when method is empty', async () => {
       const method = '';
       const value = 'test';
 
       await assertThrowsInvalidOpcode(async () => {
-        await instance.addProof(method, value, { from: signer });
+        await instance.addProof(method, value);
       });
     });
 
-    it('should reject empty value proof', async () => {
-      const signer = accounts[0];
+    it('should throw when value is empty', async () => {
       const method = 'http';
       const value = '';
 
       await assertThrowsInvalidOpcode(async () => {
-        await instance.addProof(method, value, { from: signer });
+        await instance.addProof(method, value);
       });
+    });
+  });
+
+  describe('#removeProof', () => {
+    it('should remove proof method', async () => {
+      const method = 'http';
+      const value = 'example.com';
+      await instance.addProof(method, value);
+
+      await instance.removeProof(method);
+      const proof = await instance.getProof(defaultAccount, method);
+      assert.equal(proof, '');
+    });
+
+    it('should emit ProofRemoved event', async () => {
+      const method = 'http';
+      const value = 'example.com';
+      await instance.addProof(method, value);
+      const trans = await instance.removeProof(method);
+      const log = findLastLog(trans, 'ProofRemoved');
+      const event: ProofRemoved = log.args;
+
+      assert.equal(event.signer, defaultAccount);
+      assert.equal(event.method, method);
+    });
+
+    it('should throw when called by other user', async () => {
+      const method = 'http';
+      const value = 'example.com';
+      await instance.addProof(method, value);
+
+      await assertThrowsInvalidOpcode(async () => {
+        await instance.removeProof(method, { from: otherAccount });
+      });
+    });
+
+    it('should throw when method is empty', async () => {
+      const method = '';
+
+      await assertThrowsInvalidOpcode(async () => {
+        await instance.removeProof(method);
+      });
+    });
+
+    it('should throw when proof does not exist', async () => {
+      const method = 'doesNotExist';
+
+      await assertThrowsInvalidOpcode(async () => {
+        await instance.removeProof(method);
+      });
+    });
+  });
+
+  describe('#getProof', () => {
+    it('should return empty string when proof does not exist', async () => {
+      const method = 'doesNotExist';
+
+      const proof = await instance.getProof(defaultAccount, method);
+      assert.equal(proof, '');
+    });
+
+    it('should return empty string when method is empty', async () => {
+      const method = '';
+
+      const proof = await instance.getProof(defaultAccount, method);
+      assert.equal(proof, '');
     });
   });
 });

@@ -19,6 +19,7 @@ contract SignHash {
 
     event Signed(bytes32 indexed hash, address indexed signer);
     event ProofAdded(address indexed signer, string method, string value);
+    event ProofRemoved(address indexed signer, string method);
 
     //--- Public mutable functions
 
@@ -38,6 +39,17 @@ contract SignHash {
         proofs[msg.sender][method] = value;
 
         ProofAdded(msg.sender, method, value);
+    }
+
+    function removeProof(string method) {
+        require(bytes(method).length > 0);
+
+        string storage value = proofs[msg.sender][method];
+        require(bytes(value).length > 0);
+
+        delete proofs[msg.sender][method];
+
+        ProofRemoved(msg.sender, method);
     }
 
     //--- Public constant functions
