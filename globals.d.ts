@@ -1,6 +1,7 @@
 declare interface Web3 {
   toAscii(hex: string): string;
   fromAscii(ascii: string, padding?: number): string;
+  sha3(string: string, options?: { encoding: 'hex' }): string;
 }
 
 declare interface Contract<T> {
@@ -44,11 +45,11 @@ declare type TransactionResult = {
 };
 
 declare interface MigrationsContract extends Contract<Migrations> {
-  'new'(): Promise<Migrations>;
+  'new'(options?: TransactionOptions): Promise<Migrations>;
 }
 
 declare interface SignHashContract extends Contract<SignHash> {
-  'new'(): Promise<SignHash>;
+  'new'(options?: TransactionOptions): Promise<SignHash>;
 }
 
 declare interface SignHash {
