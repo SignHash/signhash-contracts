@@ -4,6 +4,7 @@ const SignHashContract = artifacts.require('./SignHash.sol');
 
 contract('SignHash', accounts => {
   const defaultAccount = accounts[0];
+  const otherAccount = accounts[1];
   const deployer = accounts[9];
   const hash = web3.sha3('test');
 
@@ -160,6 +161,16 @@ contract('SignHash', accounts => {
 
       assert.equal(event.signer, defaultAccount);
       assert.equal(event.method, method);
+    });
+
+    it('should throw when called by other user', async () => {
+      const method = 'http';
+      const value = 'example.com';
+      await instance.addProof(method, value);
+
+      await assertThrowsInvalidOpcode(async () => {
+        await instance.removeProof(method, { from: otherAccount });
+      });
     });
 
     it('should throw when method is empty', async () => {

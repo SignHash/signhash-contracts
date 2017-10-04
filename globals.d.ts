@@ -1,7 +1,7 @@
 declare interface Web3 {
   toAscii(hex: string): string;
   fromAscii(ascii: string, padding?: number): string;
-  sha3(string: string, options?: { encoding: 'hex' }): string;
+  sha3(str: string, options?: { encoding: 'hex' }): string;
 }
 
 declare interface Contract<T> {
