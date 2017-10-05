@@ -23,8 +23,17 @@
     "type": "git",
     "url": "git+https://github.com/SignHash/signhash-contracts.git"
   },
-  "author": "Jakub Stefanski",
-  "license": "GPL-3.0",
+  "author": {
+    "name": "Jakub Stefanski",
+    "url": "https://jakubstefanski.com"
+  },
+  "contributors": [
+    {
+      "name": "Marcin Biernat",
+      "url": "https://marcinbiernat.pl"
+    }
+  ],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/SignHash/signhash-contracts/issues"
   },
