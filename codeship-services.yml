@@ -1,0 +1,16 @@
+version: "2"
+services:
+  contracts:
+    build:
+      context: .
+      dockerfile: ./docker/base/Dockerfile
+    links:
+      - testrpc
+
+  testrpc:
+    build:
+      context: .
+      dockerfile: ./docker/base/Dockerfile
+    expose:
+      - "8545"
+    command: bash -c './node_modules/.bin/testrpc > /dev/null 2>&1'

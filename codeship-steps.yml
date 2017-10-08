@@ -1,0 +1,3 @@
+- name: test contracts
+  service: contracts
+  command: npm run test -- -- --rpc-host testrpc
