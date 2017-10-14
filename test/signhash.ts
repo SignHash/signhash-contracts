@@ -64,6 +64,59 @@ contract('SignHash', accounts => {
     });
   });
 
+  describe('#revoke', () => {
+    it('should remove the only signer', async () => {
+      await instance.revoke(hash);
+
+      const signers = await instance.getSigners(hash);
+      assert.deepEqual(signers, []);
+    });
+
+    it('should remove one of the signers', async () => {
+      await Promise.all(
+        accounts.map(account => instance.sign(hash, { from: account }))
+      );
+      await instance.revoke(hash);
+
+      const signers = await instance.getSigners(hash);
+      const expected = accounts.filter(account => account !== defaultAccount);
+
+      assert.deepEqual(signers.sort(), expected.sort());
+    });
+
+    it('should not throw when there are no signers', async () => {
+      await instance.revoke(hash);
+
+      const signers = await instance.getSigners(hash);
+      assert.deepEqual(signers, []);
+    });
+
+    it('should not throw when revoking account is not signer', async () => {
+      await instance.sign(hash);
+      await instance.revoke(hash, { from: otherAccount });
+
+      const signers = await instance.getSigners(hash);
+      assert.deepEqual(signers, [defaultAccount]);
+    });
+
+    it('should emit Revoked event', async () => {
+      await instance.sign(hash);
+      const trans = await instance.revoke(hash);
+
+      const log = findLastLog(trans, 'Revoked');
+      const event: Revoked = log.args;
+
+      assert.equal(event.hash, hash);
+      assert.equal(event.signer, defaultAccount);
+    });
+
+    it('should throw when hash is empty', async () => {
+      await assertThrowsInvalidOpcode(async () => {
+        await instance.revoke('');
+      });
+    });
+  });
+
   describe('#addProof', () => {
     it('should add proof method', async () => {
       const method = 'http';

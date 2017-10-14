@@ -14,6 +14,16 @@ library AddressSet {
         }
     }
 
+    function remove(Data storage self, address element) {
+        uint256 position = self.index[element];
+        if (position != 0) {
+            self.list[position - 1] = self.list[self.list.length - 1];
+            self.list.length--;
+
+            delete self.index[element];
+        }
+    }
+
     function clear(Data storage self) public {
         for (uint256 i = 0; i < self.list.length; i++) {
             delete self.index[self.list[i]];
