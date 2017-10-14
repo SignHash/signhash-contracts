@@ -15,11 +15,17 @@ library AddressSet {
     }
 
     function remove(Data storage self, address element) {
+        // preserves initial order of elements, can be optimized if not required
+
         uint256 position = self.index[element];
         if (position != 0) {
-            self.list[position - 1] = self.list[self.list.length - 1];
-            self.list.length--;
+            // position starts from 1
+            while (position < self.list.length) {
+                self.list[position - 1] = self.list[position];
+                position++;
+            }
 
+            self.list.length--;
             delete self.index[element];
         }
     }
