@@ -7,7 +7,7 @@
     "compile:sol":
       "truffle compile --contracts_build_directory .cache/contracts",
     "compile:ts": "tsc",
-    "test": "npm-run-all compile test:run",
+    "test": "npm run compile && npm run test:run",
     "test:run": "truffle test --contracts_build_directory .cache/contracts",
     "seed": "testrpc",
     "lint": "npm-run-all lint:solium lint:tslint",
@@ -39,7 +39,9 @@
   },
   "homepage": "https://github.com/SignHash/signhash-contracts#readme",
   "dependencies": {
-    "truffle": "^3.4.9"
+    "@types/yargs": "^8.0.2",
+    "truffle": "^3.4.9",
+    "yargs": "^9.0.1"
   },
   "devDependencies": {
     "@types/bignumber.js": "^4.0.3",
