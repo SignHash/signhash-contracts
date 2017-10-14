@@ -28,6 +28,7 @@ library AddressSet {
         for (uint256 i = 0; i < self.list.length; i++) {
             delete self.index[self.list[i]];
         }
+
         delete self.list;
     }
 }

@@ -62,6 +62,36 @@ contract TestAddressSet {
         Assert.equal(set.list[2], address3, "Third element should match");
     }
 
+    function testRemove() public {
+        set.add(address1);
+        set.remove(address1);
+
+        Assert.equal(set.list.length, 0, "List should be empty");
+        Assert.equal(set.index[address1], 0, "Index should not contain the address");
+    }
+
+    function testRemoveFirst() public {
+        set.add(address1);
+        set.add(address2);
+        set.add(address3);
+        set.remove(address1);
+
+        Assert.equal(set.list.length, 2, "List should have a two elements");
+        Assert.equal(set.list[0], address3, "First element should match");
+        Assert.equal(set.list[1], address2, "Second element should match");
+    }
+
+    function testRemoveLast() public {
+        set.add(address1);
+        set.add(address2);
+        set.add(address3);
+        set.remove(address3);
+
+        Assert.equal(set.list.length, 2, "List should have a two elements");
+        Assert.equal(set.list[0], address1, "First element should match");
+        Assert.equal(set.list[1], address2, "Second element should match");
+    }
+
     function testClear() public {
         set.add(address1);
         set.add(address2);
