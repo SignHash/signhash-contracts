@@ -1,12 +1,18 @@
 pragma solidity ^0.4.0;
 
+import "./AddressSet.sol";
+
 
 contract SignHash {
+
+    //--- Definitions
+
+    using AddressSet for AddressSet.Data;
 
     //--- Storage
 
     // hash to signers
-    mapping (bytes32 => address[]) private hashSigners;
+    mapping (bytes32 => AddressSet.Data) private hashSigners;
 
     // signer to proofs (method to value)
     mapping (address => mapping (string => string)) private proofs;
@@ -26,8 +32,7 @@ contract SignHash {
     function sign(bytes32 hash) {
         require(hash != bytes32(0));
 
-        address[] storage signers = hashSigners[hash];
-        signers.push(msg.sender);
+        hashSigners[hash].add(msg.sender);
 
         Signed(hash, msg.sender);
     }
@@ -59,7 +64,7 @@ contract SignHash {
         constant
         returns (address[])
     {
-        return hashSigners[hash];
+        return hashSigners[hash].list;
     }
 
     function getProof(address signer, string method)

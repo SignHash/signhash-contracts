@@ -9,6 +9,8 @@ declare interface Contract<T> {
   deployed(): Promise<T>;
 }
 
+declare interface Library {}
+
 declare type TransactionOptions = {
   from?: string;
   gas?: number;
@@ -101,11 +103,16 @@ declare interface Migrations {
 
 declare interface Artifacts {
   require(name: './Migrations.sol'): MigrationsContract;
+  require(name: './AddressSet.sol'): Library;
   require(name: './SignHash.sol'): SignHashContract;
 }
 
 declare interface Deployer extends Promise<void> {
-  deploy<T>(contract: Contract<T>): void;
+  deploy<T>(object: Contract<T> | Library): Promise<void>;
+  link(
+    library: Library,
+    contracts: Contract<any> | [Contract<any>]
+  ): Promise<void>;
 }
 
 interface ContractContextDefinition extends Mocha.IContextDefinition {
