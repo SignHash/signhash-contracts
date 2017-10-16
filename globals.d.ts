@@ -4,8 +4,11 @@ declare interface Web3 {
   sha3(str: string, options?: { encoding: 'hex' }): string;
 }
 
-declare interface Contract<T> {
+declare interface ContractBase {
   address: string;
+}
+
+declare interface Contract<T> extends ContractBase {
   deployed(): Promise<T>;
 }
 
@@ -46,6 +49,10 @@ declare type TransactionResult = {
 
 declare interface MigrationsContract extends Contract<Migrations> {
   'new'(options?: TransactionOptions): Promise<Migrations>;
+}
+
+declare interface AddressSetLibrary extends Contract<AddressSet> {
+  'new'(options?: TransactionOptions): Promise<AddressSet>;
 }
 
 declare interface SignHashContract extends Contract<SignHash> {
@@ -99,13 +106,27 @@ declare interface Migrations {
   ): Promise<TransactionResult>;
 }
 
+declare interface AddressSet {
+  get(): Promise<string[]>;
+
+  add(
+    element: string,
+    options?: TransactionOptions
+  ): Promise<TransactionResult>;
+}
+
 declare interface Artifacts {
   require(name: './Migrations.sol'): MigrationsContract;
+  require(name: './AddressSet.sol'): AddressSetLibrary;
   require(name: './SignHash.sol'): SignHashContract;
 }
 
 declare interface Deployer extends Promise<void> {
-  deploy<T>(contract: Contract<T>): void;
+  deploy<T>(object: ContractBase): Promise<void>;
+  link(
+    library: ContractBase,
+    contracts: ContractBase | [ContractBase]
+  ): Promise<void>;
 }
 
 interface ContractContextDefinition extends Mocha.IContextDefinition {

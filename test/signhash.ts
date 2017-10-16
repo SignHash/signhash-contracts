@@ -40,6 +40,14 @@ contract('SignHash', accounts => {
       assert.deepEqual(signers.sort(), accounts.sort());
     });
 
+    it('should add signer only once', async () => {
+      await instance.sign(hash);
+      await instance.sign(hash);
+
+      const signers = await instance.getSigners(hash);
+      assert.deepEqual(signers, [defaultAccount]);
+    });
+
     it('should emit Signed event', async () => {
       const trans = await instance.sign(hash);
       const log = findLastLog(trans, 'Signed');
