@@ -8,32 +8,30 @@ import "../contracts/AddressSet.sol";
 contract TestAddressSet {
     using AddressSet for AddressSet.Data;
 
-    address address1 = address(1);
-    address address2 = address(2);
-    address address3 = address(3);
+    address private address1 = address(1);
+    address private address2 = address(2);
+    address private address3 = address(3);
 
-    AddressSet.Data set;
+    AddressSet.Data private set;
 
     function beforeEach() public {
         set.clear();
     }
 
     function testSetInitiallyEmpty() public {
-        Assert.equal(set.list.length, 0, "List should be empty");
+        assertEmpty(set);
     }
 
     function testAdd() public {
         set.add(address1);
 
-        Assert.equal(set.list.length, 1, "List should have a single element");
-        Assert.equal(set.list[0], address1, "First element should match");
+        assertElement(set, address1);
     }
 
     function testAddDuplicate() public {
         set.add(address1);
 
-        Assert.equal(set.list.length, 1, "List should have a single element");
-        Assert.equal(set.list[0], address1, "First element should match");
+        assertElement(set, address1);
     }
 
     function testAddMultiple() public {
@@ -41,13 +39,12 @@ contract TestAddressSet {
         set.add(address2);
         set.add(address3);
 
-        Assert.equal(set.list.length, 3, "List should have a single element");
-        Assert.equal(set.list[0], address1, "First element should match");
-        Assert.equal(set.list[1], address2, "Second element should match");
-        Assert.equal(set.list[2], address3, "Third element should match");
+        assertElements(set, address1, address2, address3);
     }
 
     function testAddMultipleWithDuplicates() public {
+        // keeps order of elements
+
         set.add(address1);
         set.add(address2);
         set.add(address3);
@@ -56,20 +53,119 @@ contract TestAddressSet {
         set.add(address3);
         set.add(address2);
 
-        Assert.equal(set.list.length, 3, "List should have a single element");
-        Assert.equal(set.list[0], address1, "First element should match");
-        Assert.equal(set.list[1], address2, "Second element should match");
-        Assert.equal(set.list[2], address3, "Third element should match");
+        assertElements(set, address1, address2, address3);
+    }
+
+    function testRemove() public {
+        set.add(address1);
+        set.remove(address1);
+
+        assertEmpty(set);
+    }
+
+    function testRemoveFirst() public {
+        // keeps order of elements
+
+        set.add(address1);
+        set.add(address2);
+        set.add(address3);
+        set.remove(address1);
+
+        assertElements(set, address2, address3);
+    }
+
+    function testRemoveLast() public {
+        // keeps order of elements
+
+        set.add(address1);
+        set.add(address2);
+        set.add(address3);
+        set.remove(address3);
+
+        assertElements(set, address1, address2);
+    }
+
+    function testRemoveAll() public {
+        // keeps order of elements
+
+        set.add(address1);
+        set.add(address2);
+        set.add(address3);
+        set.remove(address3);
+        set.remove(address1);
+        set.remove(address2);
+
+        assertEmpty(set);
     }
 
     function testClear() public {
         set.add(address1);
         set.add(address2);
-
         set.clear();
 
-        Assert.equal(set.list.length, 0, "List should be empty");
-        Assert.equal(set.index[address1], 0, "Index should not contain the first address");
-        Assert.equal(set.index[address2], 0, "Index should not contain the second address");
+        assertEmpty(set);
+    }
+
+    function assertEmpty(AddressSet.Data storage actual) private constant {
+        Assert.equal(actual.list.length, 0, "List should be empty");
+        Assert.equal(actual.index[address1], 0, "Address1 should not exist in index");
+        Assert.equal(actual.index[address2], 0, "Address2 should not exist in index");
+        Assert.equal(actual.index[address3], 0, "Address3 should not exist in index");
+    }
+
+    function assertElement(
+        AddressSet.Data storage actual,
+        address expected1
+    )
+        private
+        constant
+    {
+        address[] memory expected = new address[](1);
+        expected[0] = expected1;
+        assertElements(actual, expected);
+    }
+
+    function assertElements(
+        AddressSet.Data storage actual,
+        address expected1,
+        address expected2
+    )
+        private
+        constant
+    {
+        address[] memory expected = new address[](2);
+        expected[0] = expected1;
+        expected[1] = expected2;
+        assertElements(actual, expected);
+    }
+
+    function assertElements(
+        AddressSet.Data storage actual,
+        address expected1,
+        address expected2,
+        address expected3
+    )
+        private
+        constant
+    {
+        address[] memory expected = new address[](3);
+        expected[0] = expected1;
+        expected[1] = expected2;
+        expected[2] = expected3;
+        assertElements(actual, expected);
+    }
+
+    function assertElements(
+        AddressSet.Data storage actual,
+        address[] memory expected
+    )
+        private
+        constant
+    {
+        Assert.equal(actual.list.length, expected.length, "Should contain the same number of elements");
+        for (uint256 i = 0; i < expected.length; i++) {
+            Assert.equal(actual.list[i], expected[i], "Addresses should match");
+            Assert.notEqual(actual.index[expected[i]], 0, "Address should exist in index");
+        }
     }
 }

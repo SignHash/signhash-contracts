@@ -24,6 +24,8 @@ contract SignHash {
     //--- Events
 
     event Signed(bytes32 indexed hash, address indexed signer);
+    event Revoked(bytes32 indexed hash, address indexed signer);
+
     event ProofAdded(address indexed signer, string method, string value);
     event ProofRemoved(address indexed signer, string method);
 
@@ -35,6 +37,14 @@ contract SignHash {
         hashSigners[hash].add(msg.sender);
 
         Signed(hash, msg.sender);
+    }
+
+    function revoke(bytes32 hash) {
+        require(hash != bytes32(0));
+
+        hashSigners[hash].remove(msg.sender);
+
+        Revoked(hash, msg.sender);
     }
 
     function addProof(string method, string value) {

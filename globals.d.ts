@@ -61,6 +61,10 @@ declare interface SignHashContract extends Contract<SignHash> {
 
 declare interface SignHash {
   sign(hash: string, options?: TransactionOptions): Promise<TransactionResult>;
+  revoke(
+    hash: string,
+    options?: TransactionOptions
+  ): Promise<TransactionResult>;
 
   addProof(
     method: string,
@@ -79,6 +83,11 @@ declare interface SignHash {
 }
 
 declare interface Signed {
+  hash: string;
+  signer: string;
+}
+
+declare interface Revoked {
   hash: string;
   signer: string;
 }
@@ -119,10 +128,12 @@ declare interface Artifacts {
   require(name: './Migrations.sol'): MigrationsContract;
   require(name: './AddressSet.sol'): AddressSetLibrary;
   require(name: './SignHash.sol'): SignHashContract;
+  require(name: string): ContractBase;
 }
 
 declare interface Deployer extends Promise<void> {
-  deploy<T>(object: ContractBase): Promise<void>;
+  deploy(object: ContractBase): Promise<void>;
+
   link(
     library: ContractBase,
     contracts: ContractBase | [ContractBase]
