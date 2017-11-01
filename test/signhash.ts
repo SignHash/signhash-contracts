@@ -5,15 +5,13 @@ const SignHashContract = artifacts.require('./SignHash.sol');
 contract('SignHash', accounts => {
   const defaultAccount = accounts[0];
   const otherAccount = accounts[1];
-  const deployer = accounts[9];
+  const deployerAccount = accounts[9];
   const hash = web3.sha3('test');
 
   let instance: SignHash;
 
   beforeEach(async () => {
-    instance = await SignHashContract.new({
-      from: deployer
-    });
+    instance = await SignHashContract.new({ from: deployerAccount });
   });
 
   describe('#ctor', () => {
@@ -84,7 +82,7 @@ contract('SignHash', accounts => {
       assert.deepEqual(signers.sort(), expected.sort());
     });
 
-    it('should not throw when there are no signers', async () => {
+    it('should not throw when hash is not signed', async () => {
       await instance.revoke(hash);
 
       const signers = await instance.getSigners(hash);

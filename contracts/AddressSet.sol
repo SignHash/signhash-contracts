@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.18;
 
 
 library AddressSet {
@@ -14,7 +14,7 @@ library AddressSet {
         }
     }
 
-    function remove(Data storage self, address element) {
+    function remove(Data storage self, address element) public {
         // preserves initial order of elements, can be optimized if not required
 
         uint256 position = self.index[element];
