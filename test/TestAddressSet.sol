@@ -106,7 +106,7 @@ contract TestAddressSet {
         assertEmpty(set);
     }
 
-    function assertEmpty(AddressSet.Data storage actual) private constant {
+    function assertEmpty(AddressSet.Data storage actual) private {
         Assert.equal(actual.list.length, 0, "List should be empty");
         Assert.equal(actual.index[address1], 0, "Address1 should not exist in index");
         Assert.equal(actual.index[address2], 0, "Address2 should not exist in index");
@@ -118,7 +118,6 @@ contract TestAddressSet {
         address expected1
     )
         private
-        constant
     {
         address[] memory expected = new address[](1);
         expected[0] = expected1;
@@ -131,7 +130,6 @@ contract TestAddressSet {
         address expected2
     )
         private
-        constant
     {
         address[] memory expected = new address[](2);
         expected[0] = expected1;
@@ -146,7 +144,6 @@ contract TestAddressSet {
         address expected3
     )
         private
-        constant
     {
         address[] memory expected = new address[](3);
         expected[0] = expected1;
@@ -160,7 +157,6 @@ contract TestAddressSet {
         address[] memory expected
     )
         private
-        constant
     {
         Assert.equal(actual.list.length, expected.length, "Should contain the same number of elements");
         for (uint256 i = 0; i < expected.length; i++) {

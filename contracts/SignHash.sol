@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.18;
 
 import "./AddressSet.sol";
 
@@ -12,14 +12,14 @@ contract SignHash {
     //--- Storage
 
     // hash to signers
-    mapping (bytes32 => AddressSet.Data) private hashSigners;
+    mapping (bytes32 => AddressSet.Data) private signers;
 
     // signer to proofs (method to value)
     mapping (address => mapping (string => string)) private proofs;
 
     //--- Constructor
 
-    function SignHash() {}
+    function SignHash() public {}
 
     //--- Events
 
@@ -31,23 +31,23 @@ contract SignHash {
 
     //--- Public mutable functions
 
-    function sign(bytes32 hash) {
+    function sign(bytes32 hash) public {
         require(hash != bytes32(0));
 
-        hashSigners[hash].add(msg.sender);
+        signers[hash].add(msg.sender);
 
         Signed(hash, msg.sender);
     }
 
-    function revoke(bytes32 hash) {
+    function revoke(bytes32 hash) public {
         require(hash != bytes32(0));
 
-        hashSigners[hash].remove(msg.sender);
+        signers[hash].remove(msg.sender);
 
         Revoked(hash, msg.sender);
     }
 
-    function addProof(string method, string value) {
+    function addProof(string method, string value) public {
         require(bytes(method).length > 0);
         require(bytes(value).length > 0);
 
@@ -56,7 +56,7 @@ contract SignHash {
         ProofAdded(msg.sender, method, value);
     }
 
-    function removeProof(string method) {
+    function removeProof(string method) public {
         require(bytes(method).length > 0);
 
         string storage value = proofs[msg.sender][method];
@@ -71,15 +71,15 @@ contract SignHash {
 
     function getSigners(bytes32 hash)
         public
-        constant
+        view
         returns (address[])
     {
-        return hashSigners[hash].list;
+        return signers[hash].list;
     }
 
     function getProof(address signer, string method)
         public
-        constant
+        view
         returns (string)
     {
         return proofs[signer][method];
