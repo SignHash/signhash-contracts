@@ -69,12 +69,25 @@ contract SignHash {
 
     //--- Public constant functions
 
-    function getSigners(bytes32 hash)
+    function getSigners(bytes32 hash, uint256 maxCount)
         public
         view
-        returns (address[])
+        returns (address[] result)
     {
-        return signers[hash].list;
+        AddressSet.Data storage hashSigners = signers[hash];
+        if (hashSigners.count > 0) {
+            if (maxCount < hashSigners.count) {
+                result = new address[](maxCount);
+            } else {
+                result = new address[](hashSigners.count);
+            }
+
+            address current = hashSigners.head;
+            for (uint256 i = 0; i < result.length; i++) {
+                result[i] = current;
+                current = hashSigners.getNext(current);
+            }
+        }
     }
 
     function getProof(address signer, string method)

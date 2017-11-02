@@ -6,6 +6,7 @@ contract('SignHash', accounts => {
   const defaultAccount = accounts[0];
   const otherAccount = accounts[1];
   const deployerAccount = accounts[9];
+  const maxCount = accounts.length;
   const hash = web3.sha3('test');
 
   let instance: SignHash;
@@ -16,7 +17,7 @@ contract('SignHash', accounts => {
 
   describe('#ctor', () => {
     it('should start with empty list of signers', async () => {
-      const signers = await instance.getSigners(hash);
+      const signers = await instance.getSigners(hash, maxCount);
       assert.deepEqual(signers, []);
     });
   });
@@ -25,24 +26,24 @@ contract('SignHash', accounts => {
     it('should add signer', async () => {
       await instance.sign(hash);
 
-      const signers = await instance.getSigners(hash);
+      const signers = await instance.getSigners(hash, maxCount);
       assert.deepEqual(signers, [defaultAccount]);
     });
 
     it('should add multiple signers', async () => {
-      await Promise.all(
-        accounts.map(account => instance.sign(hash, { from: account }))
-      );
+      for (const account of accounts) {
+        await instance.sign(hash, { from: account });
+      }
 
-      const signers = await instance.getSigners(hash);
-      assert.deepEqual(signers.sort(), accounts.sort());
+      const signers = await instance.getSigners(hash, maxCount);
+      assert.deepEqual(signers, accounts);
     });
 
     it('should add signer only once', async () => {
       await instance.sign(hash);
       await instance.sign(hash);
 
-      const signers = await instance.getSigners(hash);
+      const signers = await instance.getSigners(hash, maxCount);
       assert.deepEqual(signers, [defaultAccount]);
     });
 
@@ -66,26 +67,26 @@ contract('SignHash', accounts => {
     it('should remove the only signer', async () => {
       await instance.revoke(hash);
 
-      const signers = await instance.getSigners(hash);
+      const signers = await instance.getSigners(hash, maxCount);
       assert.deepEqual(signers, []);
     });
 
     it('should remove one of the signers', async () => {
-      await Promise.all(
-        accounts.map(account => instance.sign(hash, { from: account }))
-      );
+      for (const account of accounts) {
+        await instance.sign(hash, { from: account });
+      }
       await instance.revoke(hash);
 
-      const signers = await instance.getSigners(hash);
+      const signers = await instance.getSigners(hash, maxCount);
       const expected = accounts.filter(account => account !== defaultAccount);
 
-      assert.deepEqual(signers.sort(), expected.sort());
+      assert.deepEqual(signers, expected);
     });
 
     it('should not throw when hash is not signed', async () => {
       await instance.revoke(hash);
 
-      const signers = await instance.getSigners(hash);
+      const signers = await instance.getSigners(hash, maxCount);
       assert.deepEqual(signers, []);
     });
 
@@ -93,7 +94,7 @@ contract('SignHash', accounts => {
       await instance.sign(hash);
       await instance.revoke(hash, { from: otherAccount });
 
-      const signers = await instance.getSigners(hash);
+      const signers = await instance.getSigners(hash, maxCount);
       assert.deepEqual(signers, [defaultAccount]);
     });
 
@@ -112,6 +113,49 @@ contract('SignHash', accounts => {
       await assertThrowsInvalidOpcode(async () => {
         await instance.revoke('');
       });
+    });
+  });
+
+  describe('#getSigners', () => {
+    it('should return empty list when there is no signers', async () => {
+      const signers = await instance.getSigners(hash, maxCount);
+      assert.deepEqual(signers, []);
+    });
+
+    it('should return single element list for a single signer', async () => {
+      await instance.sign(hash);
+
+      const signers = await instance.getSigners(hash, maxCount);
+      assert.deepEqual(signers, [defaultAccount]);
+    });
+
+    it('should return signers in chronological order', async () => {
+      for (const account of accounts) {
+        await instance.sign(hash, { from: account });
+      }
+
+      const signers = await instance.getSigners(hash, maxCount);
+      assert.deepEqual(signers, accounts);
+    });
+
+    it('should trim signers to maxCount', async () => {
+      for (const account of accounts) {
+        await instance.sign(hash, { from: account });
+      }
+
+      const reducedCount = maxCount - 1;
+      const signers = await instance.getSigners(hash, reducedCount);
+      assert.deepEqual(signers, accounts.slice(0, reducedCount));
+    });
+
+    it('should return empty list when maxCount is zero', async () => {
+      for (const account of accounts) {
+        await instance.sign(hash, { from: account });
+      }
+
+      const reducedCount = 0;
+      const signers = await instance.getSigners(hash, reducedCount);
+      assert.deepEqual(signers, []);
     });
   });
 
