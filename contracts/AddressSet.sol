@@ -24,23 +24,23 @@ library AddressSet {
         address element
     )
         internal
-        returns (bool added)
+        returns (bool)
     {
         require(element != address(0));
 
-        if (self.count == 0) {
+        if (self.head == address(0)) { // empty list
             self.head = element;
-            added = true;
-        } else if (!contains(self, element)) {
+        } else if (!contains(self, element)) { // not existing
             self.links[self.tail].next = element;
             self.links[element].previous = self.tail;
-            added = true;
+        } else { // duplicate
+            return false;
         }
 
-        if (added) {
-            self.tail = element;
-            safeIncrement(self);
-        }
+        self.tail = element;
+        safeIncrement(self);
+
+        return true;
     }
 
     function remove(
@@ -48,32 +48,30 @@ library AddressSet {
         address element
     )
         internal
-        returns (bool removed)
+        returns (bool)
     {
         require(element != address(0));
 
         Link storage link = self.links[element];
 
-        if (link.previous != address(0)) {
+        if (link.previous != address(0)) { // middle or tail
             self.links[link.previous].next = link.next;
-            removed = true;
-        } else if (element == self.head) {
+        } else if (element == self.head) { // head
             self.head = link.next;
-            removed = true;
+        } else { // not existing
+            return false;
         }
 
         if (link.next != address(0)) {
             self.links[link.next].previous = link.previous;
-            removed = true;
-        } else if (element == self.tail) {
+        } else {
             self.tail = link.previous;
-            removed = true;
         }
 
-        if (removed) {
-            delete self.links[element];
-            safeDecrement(self);
-        }
+        safeDecrement(self);
+        delete self.links[element];
+
+        return true;
     }
 
     function clear(Data storage self) internal {
@@ -122,7 +120,7 @@ library AddressSet {
         view
         returns (bool)
     {
-        return self.head == element || self.links[element].previous != address(0);
+        return element == self.head || self.links[element].previous != address(0);
     }
 
     //--- Private mutable functions
