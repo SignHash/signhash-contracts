@@ -4,18 +4,14 @@
   "description": "SignHash smart contracts",
   "scripts": {
     "compile": "run-s compile:ts compile:sol",
-    "compile:sol":
-      "truffle compile --contracts_build_directory .cache/contracts",
+    "compile:sol": "truffle compile --contracts_build_directory .cache/contracts",
     "compile:ts": "tsc",
     "test": "run-s compile:sol test:sol test:ts",
     "test:ts": "run-s compile:ts test:js",
-    "test:sol":
-      "truffle test --contracts_build_directory .cache/contracts test/*.sol",
-    "test:js":
-      "truffle test --contracts_build_directory .cache/contracts test/*.js",
+    "test:sol": "truffle test --contracts_build_directory .cache/contracts test/*.sol",
+    "test:js": "truffle test --contracts_build_directory .cache/contracts test/*.js",
     "migrate": "truffle migrate --reset --network testrpc",
-    "testrpc":
-      "testrpc --mnemonic \"try exile adapt shed width laugh similar duty neglect kick rug require\"",
+    "testrpc": "testrpc --mnemonic \"try exile adapt shed width laugh similar duty neglect kick rug require\"",
     "seed": "run-p testrpc migrate",
     "lint": "run-p -c --aggregate-output lint:solhint lint:tslint",
     "lint:tslint": "tslint *.ts migrations/*.ts test/*.ts",
@@ -24,7 +20,10 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.{ts,json}": ["format", "git add"]
+    "*.{ts,json}": [
+      "format",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -46,23 +45,21 @@
   },
   "homepage": "https://github.com/SignHash/signhash-contracts#readme",
   "dependencies": {
-    "@types/yargs": "^8.0.2",
     "ethereumjs-testrpc": "^4.1.3",
-    "truffle": "^4.0.0",
-    "yargs": "^9.0.1"
+    "truffle": "^4.0.1"
   },
   "devDependencies": {
     "@types/bignumber.js": "^4.0.3",
     "@types/chai": "^4.0.4",
-    "@types/mocha": "^2.2.43",
-    "@types/ramda": "^0.24.14",
+    "@types/mocha": "^2.2.44",
+    "@types/ramda": "^0.24.18",
     "husky": "^0.14.3",
-    "lint-staged": "^4.2.2",
+    "lint-staged": "^4.3.0",
     "npm-run-all": "^4.1.1",
-    "prettier": "^1.7.0",
+    "prettier": "^1.7.4",
     "ramda": "^0.24.1",
     "solhint": "^1.1.7",
-    "tslint": "^5.7.0",
-    "typescript": "^2.5.2"
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1"
   }
 }
