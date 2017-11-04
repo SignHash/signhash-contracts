@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.18;
 
 import "truffle/Assert.sol";
 
@@ -10,9 +10,9 @@ contract TestAddressSetAdd {
     using AddressSet for AddressSet.Data;
     using Helpers for AddressSet.Data;
 
-    address constant ADDRESS_1 = address(0xdeadbeef);
-    address constant ADDRESS_2 = address(0xcafebabe);
-    address constant ADDRESS_3 = address(0xfee1dead);
+    address private constant ADDRESS_1 = address(0xdeadbeef);
+    address private constant ADDRESS_2 = address(0xcafebabe);
+    address private constant ADDRESS_3 = address(0xfee1dead);
 
     AddressSet.Data private set;
 

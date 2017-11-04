@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.18;
 
 import "truffle/Assert.sol";
 
@@ -10,7 +10,7 @@ contract TestAddressSetEmpty {
     using AddressSet for AddressSet.Data;
     using Helpers for AddressSet.Data;
 
-    address constant NOT_EXISTING = address(0xdeadbeef);
+    address private constant NOT_EXISTING = address(0xdeadbeef);
 
     AddressSet.Data private set;
 

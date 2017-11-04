@@ -17,9 +17,9 @@
     "testrpc":
       "testrpc --mnemonic \"try exile adapt shed width laugh similar duty neglect kick rug require\"",
     "seed": "run-p testrpc migrate",
-    "lint": "run-p -c --aggregate-output lint:solium lint:tslint",
+    "lint": "run-p -c --aggregate-output lint:solhint lint:tslint",
     "lint:tslint": "tslint *.ts migrations/*.ts test/*.ts",
-    "lint:solium": "solium --dir contracts --dir test",
+    "lint:solhint": "solhint contracts/*.sol test/*.sol",
     "format": "prettier --write *.json *.js *.ts migrations/*.ts test/*.ts",
     "precommit": "lint-staged"
   },
@@ -61,7 +61,7 @@
     "npm-run-all": "^4.1.1",
     "prettier": "^1.7.0",
     "ramda": "^0.24.1",
-    "solium": "^0.5.5",
+    "solhint": "^1.1.7",
     "tslint": "^5.7.0",
     "typescript": "^2.5.2"
   }
