@@ -11,9 +11,9 @@ contract('SignHash', accounts => {
 
   let instance: SignHash;
 
-  async function signByMany(hash: string, signers: string[]) {
+  async function signByMany(hashArg: string, signers: string[]) {
     for (const signer of signers) {
-      await instance.sign(hash, { from: signer });
+      await instance.sign(hashArg, { from: signer });
     }
   }
 

@@ -1,10 +1,9 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.18;
 
 
 library AddressSet {
 
     //--- Definitions
-
     struct Link {
         address previous;
         address next;
@@ -18,7 +17,6 @@ library AddressSet {
     }
 
     //--- Public mutable functions
-
     function add(
         Data storage self,
         address element
@@ -89,7 +87,6 @@ library AddressSet {
     }
 
     //--- Public view functions
-
     function getNext(
         Data storage self,
         address current
@@ -120,11 +117,11 @@ library AddressSet {
         view
         returns (bool)
     {
-        return element == self.head || self.links[element].previous != address(0);
+        return element == self.head ||
+            self.links[element].previous != address(0);
     }
 
     //--- Private mutable functions
-
     function safeIncrement(Data storage self) private {
         assert(self.count + 1 > self.count);
         self.count++;
