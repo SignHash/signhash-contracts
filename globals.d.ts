@@ -77,7 +77,7 @@ declare interface SignHash {
     options?: TransactionOptions
   ): Promise<TransactionResult>;
 
-  getSigners(hash: string): Promise<string[]>;
+  getSigners(hash: string, maxCount: number): Promise<string[]>;
 
   getProof(signer: string, method: string): Promise<string>;
 }
