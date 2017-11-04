@@ -21,73 +21,73 @@ contract TestAddressSetAdd {
     }
 
     function testAddFirst() public {
-        shouldAdd(ADDRESS_1);
+        add(ADDRESS_1);
 
         set.shouldEqual([ADDRESS_1]);
     }
 
     function testAddMultiple() public {
-        shouldAdd(ADDRESS_1);
-        shouldAdd(ADDRESS_2);
-        shouldAdd(ADDRESS_3);
+        add(ADDRESS_1);
+        add(ADDRESS_2);
+        add(ADDRESS_3);
 
         set.shouldEqual([ADDRESS_1, ADDRESS_2, ADDRESS_3]);
     }
 
     function testAddDuplicateSole() public {
-        shouldAdd(ADDRESS_1);
-        shouldNotAdd(ADDRESS_1);
+        add(ADDRESS_1);
+        addDuplicate(ADDRESS_1);
 
         set.shouldEqual([ADDRESS_1]);
     }
 
     function testAddDuplicateFirst() public {
-        shouldAdd(ADDRESS_1);
-        shouldAdd(ADDRESS_2);
-        shouldAdd(ADDRESS_3);
-        shouldNotAdd(ADDRESS_1);
+        add(ADDRESS_1);
+        add(ADDRESS_2);
+        add(ADDRESS_3);
+        addDuplicate(ADDRESS_1);
 
         set.shouldEqual([ADDRESS_1, ADDRESS_2, ADDRESS_3]);
     }
 
     function testAddDuplicateLast() public {
-        shouldAdd(ADDRESS_1);
-        shouldAdd(ADDRESS_2);
-        shouldAdd(ADDRESS_3);
-        shouldNotAdd(ADDRESS_3);
+        add(ADDRESS_1);
+        add(ADDRESS_2);
+        add(ADDRESS_3);
+        addDuplicate(ADDRESS_3);
 
         set.shouldEqual([ADDRESS_1, ADDRESS_2, ADDRESS_3]);
     }
 
     function testAddDuplicateMiddle() public {
-        shouldAdd(ADDRESS_1);
-        shouldAdd(ADDRESS_2);
-        shouldAdd(ADDRESS_3);
-        shouldNotAdd(ADDRESS_2);
+        add(ADDRESS_1);
+        add(ADDRESS_2);
+        add(ADDRESS_3);
+        addDuplicate(ADDRESS_2);
 
         set.shouldEqual([ADDRESS_1, ADDRESS_2, ADDRESS_3]);
     }
 
     function testAddMultipleWithDuplicates() public {
-        shouldAdd(ADDRESS_1);
-        shouldAdd(ADDRESS_2);
-        shouldAdd(ADDRESS_3);
-        shouldNotAdd(ADDRESS_2);
-        shouldNotAdd(ADDRESS_1);
-        shouldNotAdd(ADDRESS_3);
-        shouldNotAdd(ADDRESS_1);
-        shouldNotAdd(ADDRESS_2);
-        shouldNotAdd(ADDRESS_3);
+        add(ADDRESS_1);
+        add(ADDRESS_2);
+        add(ADDRESS_3);
+        addDuplicate(ADDRESS_2);
+        addDuplicate(ADDRESS_1);
+        addDuplicate(ADDRESS_3);
+        addDuplicate(ADDRESS_1);
+        addDuplicate(ADDRESS_2);
+        addDuplicate(ADDRESS_3);
 
         set.shouldEqual([ADDRESS_1, ADDRESS_2, ADDRESS_3]);
     }
 
-    function shouldAdd(address addr) private {
+    function add(address addr) private {
         bool added = set.add(addr);
         Assert.isTrue(added, "Should add");
     }
 
-    function shouldNotAdd(address addr) private {
+    function addDuplicate(address addr) private {
         bool added = set.add(addr);
         Assert.isFalse(added, "Should not add");
     }

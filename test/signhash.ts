@@ -11,6 +11,12 @@ contract('SignHash', accounts => {
 
   let instance: SignHash;
 
+  async function signByMany(hash: string, signers: string[]) {
+    for (const signer of signers) {
+      await instance.sign(hash, { from: signer });
+    }
+  }
+
   beforeEach(async () => {
     instance = await SignHashContract.new({ from: deployerAccount });
   });
@@ -31,10 +37,7 @@ contract('SignHash', accounts => {
     });
 
     it('should add multiple signers', async () => {
-      for (const account of accounts) {
-        await instance.sign(hash, { from: account });
-      }
-
+      await signByMany(hash, accounts);
       const signers = await instance.getSigners(hash, maxCount);
       assert.deepEqual(signers, accounts);
     });
@@ -72,9 +75,7 @@ contract('SignHash', accounts => {
     });
 
     it('should remove one of the signers', async () => {
-      for (const account of accounts) {
-        await instance.sign(hash, { from: account });
-      }
+      await signByMany(hash, accounts);
       await instance.revoke(hash);
 
       const signers = await instance.getSigners(hash, maxCount);
@@ -130,28 +131,30 @@ contract('SignHash', accounts => {
     });
 
     it('should return signers in chronological order', async () => {
-      for (const account of accounts) {
-        await instance.sign(hash, { from: account });
-      }
+      await signByMany(hash, accounts);
 
       const signers = await instance.getSigners(hash, maxCount);
       assert.deepEqual(signers, accounts);
     });
 
     it('should trim signers to maxCount', async () => {
-      for (const account of accounts) {
-        await instance.sign(hash, { from: account });
-      }
+      await signByMany(hash, accounts);
 
       const reducedCount = maxCount - 1;
       const signers = await instance.getSigners(hash, reducedCount);
       assert.deepEqual(signers, accounts.slice(0, reducedCount));
     });
 
+    it('should return all signers when maxCount is greater', async () => {
+      await signByMany(hash, accounts);
+
+      const increasedCount = maxCount + 1;
+      const signers = await instance.getSigners(hash, increasedCount);
+      assert.deepEqual(signers, accounts);
+    });
+
     it('should return empty list when maxCount is zero', async () => {
-      for (const account of accounts) {
-        await instance.sign(hash, { from: account });
-      }
+      await signByMany(hash, accounts);
 
       const reducedCount = 0;
       const signers = await instance.getSigners(hash, reducedCount);
