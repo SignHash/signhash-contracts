@@ -1,3 +1,5 @@
+import { Deployer } from 'truffle';
+
 const SignHash = artifacts.require('./SignHash.sol');
 
 async function deploy(deployer: Deployer): Promise<void> {

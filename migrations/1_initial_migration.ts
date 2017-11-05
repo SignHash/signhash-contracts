@@ -1,3 +1,5 @@
+import { Deployer } from 'truffle';
+
 const Migrations = artifacts.require('./Migrations.sol');
 
 async function deploy(deployer: Deployer): Promise<void> {
