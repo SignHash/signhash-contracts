@@ -1,3 +1,4 @@
+import { ProofAdded, ProofRemoved, Revoked, Signed, SignHash } from 'signhash';
 import { assertThrowsInvalidOpcode, findLastLog } from './helpers';
 
 const SignHashContract = artifacts.require('./SignHash.sol');

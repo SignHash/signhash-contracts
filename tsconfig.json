@@ -7,9 +7,17 @@
     "target": "es2017",
     "baseUrl": ".",
     "strict": true,
-    "typeRoots": ["./node_modules/@types"],
-    "types": ["bignumber.js", "chai", "mocha"]
+    "typeRoots": ["./node_modules/@types", "types"],
+    "types": ["bignumber.js", "chai", "mocha", "web3", "truffle"],
+    "paths": {
+      "@*": ["./*"]
+    }
   },
   "lib": ["es2015"],
-  "include": ["./globals.d.ts", "./test/**/*", "./migrations/**/*"]
+  "include": [
+    "./index.d.ts",
+    "./globals.d.ts",
+    "./test/**/*",
+    "./migrations/**/*"
+  ]
 }
