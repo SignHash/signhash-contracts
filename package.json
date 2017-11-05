@@ -49,7 +49,6 @@
     "truffle": "^4.0.1"
   },
   "devDependencies": {
-    "@types/bignumber.js": "^4.0.3",
     "@types/chai": "^4.0.4",
     "@types/mocha": "^2.2.44",
     "@types/ramda": "^0.24.18",
