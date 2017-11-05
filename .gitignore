@@ -6,8 +6,7 @@
 
 # tsc generated files
 *.map
-*.js
-!truffle-config.js
+test/*.js
 
 # Logs
 logs
@@ -67,4 +66,3 @@ typings/
 
 # dotenv environment variables file
 .env
-
