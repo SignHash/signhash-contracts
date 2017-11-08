@@ -1,15 +1,19 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
-    "noImplicitAny": true,
+    "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "es2017",
     "baseUrl": ".",
     "strict": true,
+    "noImplicitAny": true,
     "typeRoots": ["./node_modules/@types"],
-    "types": ["bignumber.js", "chai", "mocha"]
+    "types": ["bignumber.js", "chai", "mocha", "node"]
   },
   "lib": ["es2015"],
-  "include": ["./globals.d.ts", "./test/**/*", "./migrations/**/*"]
+  "include": [
+    "./types/*.ts",
+    "./test/*.ts",
+    "./migrations/*.ts",
+    "./bin/*.ts"
+  ]
 }
