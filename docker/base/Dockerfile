@@ -1,4 +1,4 @@
-FROM node:8.5
+FROM node:8.9
 
 # Truffle dependencies
 RUN apt-get -y update &&\
@@ -9,5 +9,5 @@ RUN mkdir -p /app
 WORKDIR /app
 
 ADD / .
-RUN rm -fr node_modules
+RUN rm -rf node_modules
 RUN npm install
