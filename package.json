@@ -12,7 +12,7 @@
     "test:js": "truffle test --contracts_build_directory .cache/contracts test/*.js",
     "migrate": "truffle migrate --reset --network testrpc",
     "testrpc": "testrpc --mnemonic \"try exile adapt shed width laugh similar duty neglect kick rug require\"",
-    "seed": "run-p testrpc migrate",
+    "testrpc:deploy": "run-p testrpc migrate",
     "lint": "run-p -c --aggregate-output lint:solhint lint:tslint",
     "lint:tslint": "tslint *.ts migrations/*.ts test/*.ts",
     "lint:solhint": "solhint contracts/*.sol test/*.sol",
@@ -46,7 +46,8 @@
   "homepage": "https://github.com/SignHash/signhash-contracts#readme",
   "dependencies": {
     "truffle": "^4.0.1",
-    "ethereumjs-testrpc": "^6.0.1"
+    "ethereumjs-testrpc": "^6.0.1",
+    "npm-run-all": "^4.1.1"
   },
   "devDependencies": {
     "@types/bignumber.js": "^4.0.3",
@@ -55,7 +56,6 @@
     "@types/ramda": "^0.24.14",
     "husky": "^0.14.3",
     "lint-staged": "^4.2.2",
-    "npm-run-all": "^4.1.1",
     "prettier": "^1.7.0",
     "ramda": "^0.24.1",
     "solhint": "^1.1.7",
