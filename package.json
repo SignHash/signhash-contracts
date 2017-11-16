@@ -11,6 +11,7 @@
     "build/contracts/*.json",
     "contracts/*.sol",
     "migrations/*.js",
+    "index.js",
     "truffle-config.js"
   ],
   "scripts": {

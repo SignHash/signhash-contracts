@@ -11,9 +11,11 @@
   },
   "lib": ["es2015"],
   "include": [
-    "./types/*.ts",
-    "./test/*.ts",
-    "./migrations/*.ts",
-    "./bin/*.ts"
+    "index.ts",
+    "truffle-config.ts",
+    "types/*.ts",
+    "test/*.ts",
+    "migrations/*.ts",
+    "bin/*.ts"
   ]
 }

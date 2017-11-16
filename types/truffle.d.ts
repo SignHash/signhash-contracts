@@ -1,3 +1,8 @@
+declare module '*.json' {
+  const value: any;
+  export default value;
+}
+
 declare interface ContractContextDefinition extends Mocha.IContextDefinition {
   (description: string, callback: (accounts: Address[]) => void): Mocha.ISuite;
 }
