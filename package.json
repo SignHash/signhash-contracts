@@ -3,6 +3,16 @@
   "version": "0.0.1",
   "description": "SignHash smart contracts",
   "main": "index.js",
+  "bin": {
+    "signhash-seed": "bin/seed.js"
+  },
+  "files": [
+    "bin/*.js",
+    "build/contracts/*.json",
+    "contracts/*.sol",
+    "migrations/*.js",
+    "truffle-config.js"
+  ],
   "scripts": {
     "compile": "run-s compile:ts compile:sol",
     "compile:sol": "truffle compile",
