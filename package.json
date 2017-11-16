@@ -26,7 +26,8 @@
     "lint:tslint": "tslint *.ts migrations/*.ts test/*.ts",
     "lint:solhint": "solhint contracts/*.sol test/*.sol",
     "format": "prettier --write *.ts **/*.ts",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "prepublishOnly": "run-s compile"
   },
   "lint-staged": {
     "*.ts": [
