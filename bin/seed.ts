@@ -20,7 +20,10 @@ import * as mkdirp from 'mkdirp';
 
   await setupNetwork(config, deployer);
   await migrate(config);
-})().catch(console.error);
+})().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
 
 function configure(): Config {
   const projectDir = join(__dirname, '..');
