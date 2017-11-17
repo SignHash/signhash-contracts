@@ -1,6 +1,6 @@
 {
   "name": "signhash-contracts",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "SignHash smart contracts",
   "main": "index.js",
   "bin": {
