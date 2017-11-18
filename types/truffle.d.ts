@@ -3,56 +3,77 @@ declare module '*.json' {
   export default value;
 }
 
-declare interface ContractContextDefinition extends Mocha.IContextDefinition {
-  (description: string, callback: (accounts: Address[]) => void): Mocha.ISuite;
+declare module 'truffle' {
+  import { TxData } from 'web3';
+
+  namespace truffle {
+    interface ContractContextDefinition extends Mocha.IContextDefinition {
+      (
+        description: string,
+        callback: (accounts: Address[]) => void
+      ): Mocha.ISuite;
+    }
+
+    interface ContractBase {
+      address: Address;
+      sendTransaction(txData: TxData): TransactionResult;
+    }
+
+    interface Contract<T> extends ContractBase {
+      deployed(): Promise<T>;
+    }
+
+    interface TruffleArtifacts {
+      require(name: string): ContractBase;
+    }
+
+    type TransactionOptions = {
+      from?: Address;
+      gas?: number;
+      gasPrice?: number;
+    };
+
+    type TransactionReceipt = {
+      transactionHash: string;
+      transactionIndex: number;
+      blockHash: string;
+      blockNumber: number;
+      gasUsed: number;
+      cumulativeGasUsed: number;
+      contractAddress: Address | null;
+      logs: [TransactionLog];
+    };
+
+    type TransactionLog = {
+      logIndex: number;
+      transactionIndex: number;
+      transactionHash: string;
+      blockHash: string;
+      blockNumber: number;
+      address: Address;
+      type: string;
+      event: string;
+      args: any;
+    };
+
+    type TransactionResult = {
+      tx: string;
+      receipt: TransactionReceipt;
+      logs: [TransactionLog];
+    };
+
+    interface Deployer extends Promise<void> {
+      deploy(object: ContractBase): Promise<void>;
+
+      link(
+        library: ContractBase,
+        contracts: ContractBase | [ContractBase]
+      ): Promise<void>;
+    }
+  }
+
+  export = truffle;
 }
-
-declare interface ContractBase {
-  address: Address;
-}
-
-declare interface Contract<T> extends ContractBase {
-  deployed(): Promise<T>;
-}
-
-declare interface TruffleArtifacts {
-  require(name: string): ContractBase;
-}
-
-declare type TransactionOptions = {
-  from?: Address;
-  gas?: number;
-  gasPrice?: number;
-};
-
-declare type TransactionReceipt = {
-  transactionHash: string;
-  transactionIndex: number;
-  blockHash: string;
-  blockNumber: number;
-  gasUsed: number;
-  cumulativeGasUsed: number;
-  contractAddress: Address | null;
-  logs: [TransactionLog];
-};
-
-declare type TransactionLog = {
-  logIndex: number;
-  transactionIndex: number;
-  transactionHash: string;
-  blockHash: string;
-  blockNumber: number;
-  address: Address;
-  type: string;
-  event: string;
-  args: any;
-};
-
-declare type TransactionResult = {
-  tx: string;
-  receipt: TransactionReceipt;
-  logs: [TransactionLog];
-};
 
 declare module 'truffle-config' {
   import { BigNumber } from 'bignumber.js';
@@ -91,7 +112,6 @@ declare module 'truffle-config' {
     port: number;
     provider: Provider;
     resolver: Resolver;
-    working_directory: string;
   }
 
   type Network = {
@@ -131,6 +151,7 @@ declare module 'truffle-resolver' {
 
   // noinspection JSUnusedGlobalSymbols
   class Resolver {
+    // noinspection JSUnusedGlobalSymbols
     public constructor(config: Config);
   }
 
@@ -146,6 +167,7 @@ declare module 'truffle-artifactor' {
 
   // noinspection JSUnusedGlobalSymbols
   class Artifactor {
+    // noinspection JSUnusedGlobalSymbols
     public constructor(contractsBuildDirectory: string);
 
     saveAll(contracts: ContractDefinitions): Promise<void>;
@@ -162,13 +184,4 @@ declare module 'truffle-migrate' {
   import * as Config from 'truffle-config';
 
   function run(config: Config, cb: Callback<any>): Config;
-}
-
-declare interface Deployer extends Promise<void> {
-  deploy(object: ContractBase): Promise<void>;
-
-  link(
-    library: ContractBase,
-    contracts: ContractBase | [ContractBase]
-  ): Promise<void>;
 }

@@ -1,6 +1,21 @@
 import { assert } from 'chai';
 
+import * as Web3 from 'web3';
+
+import {
+  ProofAddedEvent,
+  ProofRemovedEvent,
+  RevokedEvent,
+  SignedEvent,
+  SignHash,
+  SignHashArtifacts
+} from 'signhash';
+import { ContractContextDefinition } from 'truffle';
 import { assertThrowsInvalidOpcode, findLastLog } from './helpers';
+
+declare const web3: Web3;
+declare const artifacts: SignHashArtifacts;
+declare const contract: ContractContextDefinition;
 
 const SignHashContract = artifacts.require('./SignHash.sol');
 
@@ -55,7 +70,7 @@ contract('SignHash', accounts => {
     it('should emit Signed event', async () => {
       const trans = await instance.sign(hash);
       const log = findLastLog(trans, 'Signed');
-      const event: Signed = log.args;
+      const event: SignedEvent = log.args;
 
       assert.equal(event.hash, hash);
       assert.equal(event.signer, defaultAccount);
@@ -108,7 +123,7 @@ contract('SignHash', accounts => {
       const trans = await instance.revoke(hash);
 
       const log = findLastLog(trans, 'Revoked');
-      const event: Revoked = log.args;
+      const event: RevokedEvent = log.args;
 
       assert.equal(event.hash, hash);
       assert.equal(event.signer, defaultAccount);
@@ -224,7 +239,7 @@ contract('SignHash', accounts => {
       const value = 'example.com';
       const trans = await instance.addProof(method, value);
       const log = findLastLog(trans, 'ProofAdded');
-      const event: ProofAdded = log.args;
+      const event: ProofAddedEvent = log.args;
 
       assert.equal(event.signer, defaultAccount);
       assert.equal(event.method, method);
@@ -267,7 +282,7 @@ contract('SignHash', accounts => {
       await instance.addProof(method, value);
       const trans = await instance.removeProof(method);
       const log = findLastLog(trans, 'ProofRemoved');
-      const event: ProofRemoved = log.args;
+      const event: ProofRemovedEvent = log.args;
 
       assert.equal(event.signer, defaultAccount);
       assert.equal(event.method, method);

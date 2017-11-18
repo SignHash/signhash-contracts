@@ -1,12 +1,9 @@
 type Callback<T> = (err: Error | null, value: T) => void;
-type VoidCallback = (err: Error | null) => void;
 
 type Address = string;
 
 declare module 'web3' {
   import { BigNumber } from 'bignumber.js';
-
-  type AnyNumber = number | string | BigNumber;
 
   type Unit =
     | 'kwei'
@@ -25,24 +22,16 @@ declare module 'web3' {
     | 'gether'
     | 'tether';
 
-  interface TxData {
-    from: Address;
-    to?: Address;
-    value?: AnyNumber;
-    gas?: AnyNumber;
-    gasPrice?: AnyNumber;
-    data?: string;
-    nonce?: AnyNumber;
-  }
-
+  // noinspection JSUnusedGlobalSymbols
   class Web3 {
+    // noinspection JSUnusedGlobalSymbols
     public constructor(provider: Web3.Provider);
 
-    public toWei(amount: AnyNumber, unit: Unit): string;
+    public toWei(amount: Web3.AnyNumber, unit: Unit): string;
     public sha3(str: string, options?: { encoding: 'hex' }): string;
 
     public eth: {
-      sendTransaction(txData: TxData, callback: Callback<string>): void;
+      sendTransaction(txData: Web3.TxData, callback: Callback<string>): void;
       getBalance(account: Address, callback: Callback<BigNumber>): BigNumber;
     };
 
@@ -52,6 +41,8 @@ declare module 'web3' {
   }
 
   namespace Web3 {
+    type AnyNumber = number | string | BigNumber;
+
     interface RequestPayload {
       params: any[];
       method: string;
@@ -70,6 +61,16 @@ declare module 'web3' {
         payload: RequestPayload,
         callback: (err: Error | null, result: ResponsePayload) => void
       ): void;
+    }
+
+    interface TxData {
+      from: Address;
+      to?: Address;
+      value?: AnyNumber;
+      gas?: AnyNumber;
+      gasPrice?: AnyNumber;
+      data?: string;
+      nonce?: AnyNumber;
     }
   }
 

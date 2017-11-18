@@ -1,3 +1,8 @@
+import { SignHashArtifacts } from 'signhash';
+import { Deployer } from 'truffle';
+
+declare const artifacts: SignHashArtifacts;
+
 const SignHash = artifacts.require('./SignHash.sol');
 
 async function deploy(deployer: Deployer) {
