@@ -1,8 +1,19 @@
 {
   "name": "signhash-contracts",
-  "version": "0.0.1",
+  "version": "0.2.1",
   "description": "SignHash smart contracts",
   "main": "index.js",
+  "bin": {
+    "signhash-seed": "bin/seed.js"
+  },
+  "files": [
+    "bin/*.js",
+    "build/contracts/*.json",
+    "contracts/*.sol",
+    "migrations/*.js",
+    "index.js",
+    "truffle-config.js"
+  ],
   "scripts": {
     "compile": "run-s compile:ts compile:sol",
     "compile:sol": "truffle compile",
@@ -16,7 +27,8 @@
     "lint:tslint": "tslint *.ts migrations/*.ts test/*.ts",
     "lint:solhint": "solhint contracts/*.sol test/*.sol",
     "format": "prettier --write *.ts **/*.ts",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "prepublishOnly": "run-s compile"
   },
   "lint-staged": {
     "*.ts": [
