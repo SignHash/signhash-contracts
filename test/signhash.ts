@@ -1,3 +1,5 @@
+import { assert } from 'chai';
+
 import { assertThrowsInvalidOpcode, findLastLog } from './helpers';
 
 const SignHashContract = artifacts.require('./SignHash.sol');
@@ -11,7 +13,7 @@ contract('SignHash', accounts => {
 
   let instance: SignHash;
 
-  async function signByMany(hashArg: string, signers: string[]) {
+  async function signByMany(hashArg: string, signers: Address[]) {
     for (const signer of signers) {
       await instance.sign(hashArg, { from: signer });
     }
@@ -79,7 +81,9 @@ contract('SignHash', accounts => {
       await instance.revoke(hash);
 
       const signers = await instance.getSigners(hash, maxCount);
-      const expected = accounts.filter(account => account !== defaultAccount);
+      const expected = accounts.filter(
+        (account: Address) => account !== defaultAccount
+      );
 
       assert.deepEqual(signers, expected);
     });

@@ -2,25 +2,24 @@
   "name": "signhash-contracts",
   "version": "0.0.1",
   "description": "SignHash smart contracts",
+  "main": "index.js",
   "scripts": {
     "compile": "run-s compile:ts compile:sol",
-    "compile:sol": "truffle compile --contracts_build_directory .cache/contracts",
+    "compile:sol": "truffle compile",
     "compile:ts": "tsc",
-    "test": "run-s compile:sol test:sol test:ts",
-    "test:ts": "run-s compile:ts test:js",
-    "test:sol": "truffle test --contracts_build_directory .cache/contracts test/*.sol",
-    "test:js": "truffle test --contracts_build_directory .cache/contracts test/*.js",
+    "test": "run-s compile:ts test:truffle",
+    "test:truffle": "truffle test",
     "migrate": "truffle migrate --reset --network testrpc",
-    "testrpc": "testrpc --mnemonic \"try exile adapt shed width laugh similar duty neglect kick rug require\"",
-    "testrpc:deploy": "run-p testrpc migrate",
+    "seed": "run-s compile:ts seed:js",
+    "seed:js": "node bin/seed.js",
     "lint": "run-p -c --aggregate-output lint:solhint lint:tslint",
     "lint:tslint": "tslint *.ts migrations/*.ts test/*.ts",
     "lint:solhint": "solhint contracts/*.sol test/*.sol",
-    "format": "prettier --write *.json *.js *.ts migrations/*.ts test/*.ts",
+    "format": "prettier --write *.ts **/*.ts",
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.{ts,json}": [
+    "*.ts": [
       "format",
       "git add"
     ]
@@ -45,17 +44,27 @@
   },
   "homepage": "https://github.com/SignHash/signhash-contracts#readme",
   "dependencies": {
+    "ethereumjs-testrpc": "^4.1.3",
+    "mkdirp": "^0.5.1",
     "truffle": "^4.0.1",
-    "ethereumjs-testrpc": "^6.0.1",
-    "npm-run-all": "^4.1.1"
+    "truffle-artifactor": "^3.0.0",
+    "truffle-compile": "^3.0.2",
+    "truffle-config": "^1.0.3",
+    "truffle-migrate": "^2.0.0",
+    "truffle-resolver": "^4.0.1"
   },
   "devDependencies": {
     "@types/bignumber.js": "^4.0.3",
     "@types/chai": "^4.0.4",
-    "@types/mocha": "^2.2.43",
+    "@types/es6-promise": "0.0.33",
+    "@types/mkdirp": "^0.5.1",
+    "@types/mocha": "^2.2.44",
+    "@types/node": "^8.0.51",
     "@types/ramda": "^0.24.14",
+    "chai": "^4.1.2",
     "husky": "^0.14.3",
-    "lint-staged": "^4.2.2",
+    "lint-staged": "^4.3.0",
+    "npm-run-all": "^4.1.2",
     "prettier": "^1.7.0",
     "ramda": "^0.24.1",
     "solhint": "^1.1.7",

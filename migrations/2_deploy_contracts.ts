@@ -1,6 +1,6 @@
 const SignHash = artifacts.require('./SignHash.sol');
 
-async function deploy(deployer: Deployer): Promise<void> {
+async function deploy(deployer: Deployer) {
   await deployer.deploy(SignHash);
 }
 

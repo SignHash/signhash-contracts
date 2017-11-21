@@ -6,7 +6,7 @@
 
 # tsc generated files
 *.map
-test/*.js
+*.js
 
 # Logs
 logs

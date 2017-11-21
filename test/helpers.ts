@@ -1,3 +1,4 @@
+import { assert } from 'chai';
 import { findLast, propEq } from 'ramda';
 
 export async function assertThrowsInvalidOpcode(func: () => void) {
