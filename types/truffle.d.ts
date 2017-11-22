@@ -150,10 +150,8 @@ declare module 'truffle-compile' {
 declare module 'truffle-resolver' {
   import * as Config from 'truffle-config';
 
-  // noinspection JSUnusedGlobalSymbols
   class Resolver {
-    // noinspection JSUnusedGlobalSymbols
-    public constructor(config: Config);
+    constructor(config: Config);
   }
 
   namespace Resolver {
@@ -166,10 +164,8 @@ declare module 'truffle-resolver' {
 declare module 'truffle-artifactor' {
   import { ContractDefinitions } from 'truffle-compile';
 
-  // noinspection JSUnusedGlobalSymbols
   class Artifactor {
-    // noinspection JSUnusedGlobalSymbols
-    public constructor(contractsBuildDirectory: string);
+    constructor(contractsBuildDirectory: string);
 
     saveAll(contracts: ContractDefinitions): Promise<void>;
   }

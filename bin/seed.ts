@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { join } from 'path';
-import { ConsoleTransportOptions, Logger, transports } from 'winston';
+import { Logger, transports } from 'winston';
 
 import { promisify } from '../utils';
 
