@@ -22,17 +22,19 @@ declare module 'web3' {
     | 'gether'
     | 'tether';
 
-  // noinspection JSUnusedGlobalSymbols
   class Web3 {
-    // noinspection JSUnusedGlobalSymbols
     public constructor(provider: Web3.Provider);
 
     public toWei(amount: Web3.AnyNumber, unit: Unit): string;
     public sha3(str: string, options?: { encoding: 'hex' }): string;
 
+    public toDecimal(hex: string): number;
+    public toHex(num: number): string;
+
     public eth: {
       sendTransaction(txData: Web3.TxData, callback: Callback<string>): void;
       getBalance(account: Address, callback: Callback<BigNumber>): BigNumber;
+      sign(account: Address, text: string): string;
     };
 
     public version: {

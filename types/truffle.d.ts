@@ -20,6 +20,7 @@ declare module 'truffle' {
     }
 
     interface Contract<T> extends ContractBase {
+      at(address: Address): Promise<T>;
       deployed(): Promise<T>;
     }
 
@@ -63,7 +64,7 @@ declare module 'truffle' {
     };
 
     interface Deployer extends Promise<void> {
-      deploy(object: ContractBase): Promise<void>;
+      deploy(object: ContractBase, ...args: any[]): Promise<void>;
 
       link(
         library: ContractBase,

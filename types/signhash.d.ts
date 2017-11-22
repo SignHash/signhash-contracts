@@ -7,6 +7,7 @@ declare module 'signhash' {
     TruffleArtifacts
   } from 'truffle';
   import { BigNumber } from 'bignumber.js';
+  import { AnyNumber } from 'web3';
 
   namespace signhash {
     interface SignHash extends ContractBase {
@@ -69,12 +70,30 @@ declare module 'signhash' {
     }
 
     interface TipsWallet extends ContractBase {
-      getOwners(): Promise<Address[]>;
+      owners(): Promise<Address[]>;
+
+      nonce(): Promise<BigNumber>;
+
+      execute(
+        v: number[],
+        r: string[],
+        s: string[],
+        to: Address,
+        value: AnyNumber,
+        data: string
+      ): Promise<TransactionResult>;
     }
 
     interface DepositEvent {
       from: Address;
       value: BigNumber;
+    }
+
+    interface ExecutedEvent {
+      destination: Address;
+      nonce: BigNumber;
+      value: BigNumber;
+      data: string;
     }
 
     interface MigrationsContract extends Contract<Migrations> {

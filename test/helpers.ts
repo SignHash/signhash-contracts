@@ -37,7 +37,7 @@ export function assertInvalidOpcode(error: { message: string }) {
 export function assertNumberEqual(
   actual: number | string | BigNumber,
   expect: number | string | BigNumber,
-  decimals: number
+  decimals: number = 0
 ) {
   const actualNum = new BigNumber(actual);
   const expectNum = new BigNumber(expect);
