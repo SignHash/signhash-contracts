@@ -15,7 +15,7 @@ export class MultiSig {
     destination: Address,
     value: Web3.AnyNumber,
     nonce: Web3.AnyNumber,
-    data: string = '0x'
+    data: string
   ): Signature {
     const tx = [
       '0x',
@@ -38,17 +38,34 @@ export class MultiSig {
     };
   }
 
-  public async execute(
+  public signEtherWithdrawal(
+    signer: Address,
+    destination: Address,
+    value: Web3.AnyNumber,
+    nonce: Web3.AnyNumber
+  ): Signature {
+    return this.signTransaction(signer, destination, value, nonce, '0x');
+  }
+
+  public async executeTransaction(
     sigs: Signature[],
     destination: Address,
     value: Web3.AnyNumber,
-    data: string = '0x'
+    data: string
   ): Promise<TransactionResult> {
     const v = sigs.map(sig => sig.v);
     const r = sigs.map(sig => sig.r);
     const s = sigs.map(sig => sig.s);
 
     return this.wallet.execute(v, r, s, destination, value, data);
+  }
+
+  public async executeEtherWithdrawal(
+    sigs: Signature[],
+    destination: Address,
+    value: Web3.AnyNumber
+  ): Promise<TransactionResult> {
+    return this.executeTransaction(sigs, destination, value, '0x');
   }
 }
 

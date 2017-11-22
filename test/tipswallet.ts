@@ -40,16 +40,12 @@ contract('TipsWallet', accounts => {
     });
   }
 
-  async function sendTransaction(
-    destination: Address,
-    value: Web3.AnyNumber,
-    data: string = '0x'
-  ) {
+  async function withdrawEther(destination: Address, value: Web3.AnyNumber) {
     const nonce = await instance.nonce();
     const sigs = owners.map(owner =>
-      multisig.signTransaction(owner, destination, value, nonce, data)
+      multisig.signEtherWithdrawal(owner, destination, value, nonce)
     );
-    return await multisig.execute(sigs, destination, value, data);
+    return await multisig.executeEtherWithdrawal(sigs, destination, value);
   }
 
   beforeEach(async () => {
@@ -113,7 +109,7 @@ contract('TipsWallet', accounts => {
         const prevBalance = await utils.getBalance(destination);
         const expectedBalance = prevBalance.add(value);
 
-        await sendTransaction(destination, value);
+        await withdrawEther(destination, value);
 
         assertEtherEqual(await utils.getBalance(destination), expectedBalance);
       });
@@ -123,7 +119,7 @@ contract('TipsWallet', accounts => {
         const value = utils.toEther(0.1);
         const nonce = await instance.nonce();
 
-        const trans = await sendTransaction(destination, value);
+        const trans = await withdrawEther(destination, value);
 
         const log = findLastLog(trans, 'Executed');
         const event = log.args as ExecutedEvent;
