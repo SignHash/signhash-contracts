@@ -14,9 +14,26 @@ declare module 'truffle' {
       ): Mocha.ISuite;
     }
 
+    interface Request {
+      method: 'eth_call' | 'eth_sendTransaction';
+      params: RequestParameter[];
+    }
+
+    interface RequestParameter {
+      to: Address;
+      data: string;
+    }
+
+    interface Method {
+      call(...args: any[]): Promise<any>;
+      sendTransaction(...args: any[]): Promise<string>;
+      request(...args: any[]): Promise<Request>;
+      estimateGas(...args: any[]): Promise<number>;
+    }
+
     interface ContractBase {
       address: Address;
-      sendTransaction(txData: TxData): TransactionResult;
+      sendTransaction(txData: TxData): Promise<TransactionResult>;
     }
 
     interface Contract<T> extends ContractBase {
@@ -24,8 +41,12 @@ declare module 'truffle' {
       deployed(): Promise<T>;
     }
 
+    interface AnyContract extends Contract<any> {
+      'new'(...args: any[]): Promise<any>;
+    }
+
     interface TruffleArtifacts {
-      require(name: string): ContractBase;
+      require(name: string): AnyContract;
     }
 
     type TransactionOptions = {

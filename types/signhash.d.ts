@@ -1,5 +1,6 @@
 declare module 'signhash' {
   import {
+    AnyContract,
     Contract,
     ContractBase,
     TransactionOptions,
@@ -116,10 +117,26 @@ declare module 'signhash' {
     }
 
     interface SignHashArtifacts extends TruffleArtifacts {
+      require(name: string): AnyContract;
       require(name: './Migrations.sol'): MigrationsContract;
       require(name: './AddressSet.sol'): AddressSetLibrary;
       require(name: './SignHash.sol'): SignHashContract;
       require(name: './TipsWallet.sol'): TipsWalletContract;
+    }
+
+    interface ERC20 extends ContractBase {
+      totalSupply(): Promise<BigNumber>;
+
+      balanceOf(who: Address): Promise<BigNumber>;
+      allowance(owner: Address, spender: Address): Promise<BigNumber>;
+
+      transfer(to: Address, value: BigNumber): Promise<TransactionResult>;
+      transferFrom(
+        from: Address,
+        to: Address,
+        value: AnyNumber
+      ): Promise<TransactionResult>;
+      approve(spender: Address, value: AnyNumber): Promise<TransactionResult>;
     }
   }
 
