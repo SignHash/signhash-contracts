@@ -1,6 +1,6 @@
-type Callback<T> = (err: Error | null, value: T) => void;
+declare type Callback<T> = (err: Error | null, value: T) => void;
 
-type Address = string;
+declare type Address = string;
 
 declare module 'web3' {
   import { BigNumber } from 'bignumber.js';

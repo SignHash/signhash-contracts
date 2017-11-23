@@ -7,10 +7,10 @@ contract TestERC20Token {
     string public name = "TestERC20";
     string public symbol = "TEST";
     uint256 public decimals = 18;
-
     uint256 public totalSupply;
-    mapping(address => uint256) balances;
-    mapping (address => mapping (address => uint256)) allowed;
+
+    mapping(address => uint256) private balances;
+    mapping (address => mapping (address => uint256)) private allowed;
 
     //--- Constructor
     function TestERC20Token() public {
@@ -23,12 +23,17 @@ contract TestERC20Token {
     event Transfer(address indexed from, address indexed to, uint256 value);
 
     //--- Public mutable functions
+    /* solhint-disable no-simple-event-func-name */
     function transfer(address to, uint256 value) public returns (bool) {
+    /* solhint-enable no-simple-event-func-name */
+
         require(to != address(0));
 
         balances[msg.sender] = safeSub(balances[msg.sender], value);
         balances[to] = safeAdd(balances[to], value);
+
         Transfer(msg.sender, to, value);
+
         return true;
     }
 

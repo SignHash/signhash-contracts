@@ -11,7 +11,9 @@ import {
 } from 'signhash';
 import { ContractContextDefinition } from 'truffle';
 
-import { MultiSig, Web3Utils } from '../utils';
+import { MultiSigERC20Transfer, MultiSigTransfer } from '../multisig';
+import { Web3Utils } from '../utils';
+
 import {
   assertEtherEqual,
   assertNumberEqual,
@@ -33,7 +35,6 @@ contract('TipsWallet', accounts => {
 
   let instance: TipsWallet;
   let token: ERC20;
-  let multisig: MultiSig;
 
   async function tip(value: Web3.AnyNumber, from: Address = benefactor) {
     return await instance.sendTransaction({
@@ -45,32 +46,29 @@ contract('TipsWallet', accounts => {
 
   async function transferEther(destination: Address, value: Web3.AnyNumber) {
     const nonce = await instance.nonce();
+    const transfer = new MultiSigTransfer(web3, instance);
+
     const signatures = owners.map(owner =>
-      multisig.signEtherTransfer(owner, destination, value, nonce)
+      transfer.sign(owner, destination, value, nonce)
     );
-    return await multisig.executeEtherTransfer(signatures, destination, value);
+
+    return await transfer.execute(signatures, destination, value);
   }
 
   async function transferERC20(destination: Address, amount: Web3.AnyNumber) {
     const nonce = await instance.nonce();
+    const erc20Transfer = new MultiSigERC20Transfer(web3, instance, token);
+
     const signatures = await Promise.all(
-      owners.map(owner =>
-        multisig.signERC20Transfer(token, owner, destination, amount, nonce)
-      )
+      owners.map(owner => erc20Transfer.sign(owner, destination, amount, nonce))
     );
 
-    return await multisig.executeERC20Transfer(
-      signatures,
-      token,
-      destination,
-      amount
-    );
+    return await erc20Transfer.execute(signatures, destination, amount);
   }
 
   beforeEach(async () => {
     instance = await TipsWalletContract.new(owners);
     token = (await TestERC20TokenContract.new()) as ERC20;
-    multisig = new MultiSig(web3, instance);
   });
 
   describe('#ctor', () => {
@@ -151,7 +149,7 @@ contract('TipsWallet', accounts => {
       });
     });
 
-    describe.only('transfer ERC20', () => {
+    describe('transfer ERC20', () => {
       const amount = utils.toEther(10);
 
       beforeEach(async () => {

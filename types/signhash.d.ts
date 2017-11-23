@@ -70,11 +70,7 @@ declare module 'signhash' {
       ): Promise<TransactionResult>;
     }
 
-    interface TipsWallet extends ContractBase {
-      owners(): Promise<Address[]>;
-
-      nonce(): Promise<BigNumber>;
-
+    interface MultiSig extends ContractBase {
       execute(
         v: number[],
         r: string[],
@@ -83,6 +79,11 @@ declare module 'signhash' {
         value: AnyNumber,
         data: string
       ): Promise<TransactionResult>;
+    }
+
+    interface TipsWallet extends MultiSig {
+      owners(): Promise<Address[]>;
+      nonce(): Promise<BigNumber>;
     }
 
     interface DepositEvent {
