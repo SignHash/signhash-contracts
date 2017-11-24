@@ -23,9 +23,9 @@ contract TipsWallet {
     }
 
     //--- Events
-    event OwnersSet(address setter, address[] owners);
-    event Deposit(address from, uint256 value);
-    event Executed(address destination, uint256 nonce, uint256 value, bytes data);
+    event OwnersSet(address indexed setter, address[] owners);
+    event Deposit(address indexed from, uint256 value);
+    event Executed(address indexed destination, uint256 nonce, uint256 value, bytes data);
 
     //--- Accessors
     function owners() public view returns (address[]) {
