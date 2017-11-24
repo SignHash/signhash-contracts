@@ -66,18 +66,6 @@ contract('TipsWallet', accounts => {
     return await erc20Transfer.execute(signatures, destination, amount);
   }
 
-  async function getDestinations(count: number) {
-    return await Promise.all(
-      accounts.slice(owners.length, count).map(async account => {
-        return {
-          account,
-          initialBalance: await utils.getBalance(account),
-          initialTokenBalance: await token.balanceOf(account)
-        };
-      })
-    );
-  }
-
   beforeEach(async () => {
     instance = await TipsWalletContract.new(owners);
     token = (await TestERC20TokenContract.new()) as ERC20;
@@ -182,20 +170,23 @@ contract('TipsWallet', accounts => {
 
       it('should transfer Ether to several accounts', async () => {
         const value = utils.toEther(0.1);
-        const destinations = await getDestinations(5);
+        const destinations = accounts.slice(owners.length, 5);
 
         // sign all transfers
         const transfer = new MultiSigTransfer(web3, instance);
 
         const nonce = await instance.nonce();
-        const specifications = destinations.map((destination, index) => {
-          return {
-            destination,
+        const specifications = await Promise.all(
+          destinations.map(async (account, index) => ({
+            destination: {
+              account,
+              initialBalance: await utils.getBalance(account)
+            },
             signatures: owners.map(owner =>
-              transfer.sign(owner, destination.account, value, nonce.add(index))
+              transfer.sign(owner, account, value, nonce.add(index))
             )
-          };
-        });
+          }))
+        );
 
         // execute all transfers
         for (const { signatures, destination } of specifications) {
@@ -248,29 +239,30 @@ contract('TipsWallet', accounts => {
 
       it('should transfer token to several accounts', async () => {
         const amount = utils.toEther(10);
-        const destinations = await getDestinations(5);
+        const destinations = accounts.slice(owners.length, 5);
 
         // sign all token transfers
         const tokenTransfer = new MultiSigERC20Transfer(web3, instance, token);
 
         const nonce = await instance.nonce();
         const specifications = await Promise.all(
-          destinations.map(async (destination, index) => {
-            return {
-              destination,
-              signatures: await Promise.all(
-                owners.map(
-                  async owner =>
-                    await tokenTransfer.sign(
-                      owner,
-                      destination.account,
-                      amount,
-                      nonce.add(index)
-                    )
-                )
+          destinations.map(async (account, index) => ({
+            destination: {
+              account,
+              initialTokenBalance: await token.balanceOf(account)
+            },
+            signatures: await Promise.all(
+              owners.map(
+                async owner =>
+                  await tokenTransfer.sign(
+                    owner,
+                    account,
+                    amount,
+                    nonce.add(index)
+                  )
               )
-            };
-          })
+            )
+          }))
         );
 
         // execute all token transfers
