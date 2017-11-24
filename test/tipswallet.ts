@@ -129,13 +129,12 @@ contract('TipsWallet', accounts => {
 
   describe('#execute', () => {
     describe('transfer Ether', () => {
-      const value = utils.toEther(0.1);
-
       beforeEach(async () => {
-        await tip(value.mul(10));
+        await tip(utils.toEther(1));
       });
 
       it('should transfer Ether to account', async () => {
+        const value = utils.toEther(0.1);
         const destinationAccount = accounts[9];
         const initialBalance = await utils.getBalance(destinationAccount);
         const expectedBalance = initialBalance.add(value);
@@ -149,6 +148,7 @@ contract('TipsWallet', accounts => {
       });
 
       it('should emit Executed event', async () => {
+        const value = utils.toEther(0.1);
         const destinationAccount = accounts[9];
         const nonce = await instance.nonce();
 
@@ -163,7 +163,25 @@ contract('TipsWallet', accounts => {
         assert.equal(event.data, '0x');
       });
 
+      it('should transfer Ether to account repeatedly', async () => {
+        const values = [0.1, 0.3, 0.5].map(value => utils.toEther(value));
+        const destinationAccount = accounts[9];
+        const initialBalance = await utils.getBalance(destinationAccount);
+        const valuesSum = values.reduce((a, b) => a.add(b), utils.toEther(0));
+        const expectedBalance = initialBalance.add(valuesSum);
+
+        for (const value of values) {
+          await transferEther(destinationAccount, value);
+        }
+
+        assertEtherEqual(
+          await utils.getBalance(destinationAccount),
+          expectedBalance
+        );
+      });
+
       it('should transfer Ether to several accounts', async () => {
+        const value = utils.toEther(0.1);
         const destinations = await getDestinations(5);
 
         // sign all transfers
@@ -193,13 +211,12 @@ contract('TipsWallet', accounts => {
     });
 
     describe('transfer ERC20', () => {
-      const amount = utils.toEther(10);
-
       beforeEach(async () => {
-        await token.transfer(instance.address, amount.mul(10));
+        await token.transfer(instance.address, utils.toEther(100));
       });
 
-      it('should transfer token to account', async () => {
+      it('should transfer tokens to account', async () => {
+        const amount = utils.toEther(10);
         const destinationAccount = accounts[9];
         const initialBalance = await token.balanceOf(destinationAccount);
         const expectedBalance = initialBalance.add(amount);
@@ -212,10 +229,28 @@ contract('TipsWallet', accounts => {
         );
       });
 
+      it('should transfer tokens to account repeatedly', async () => {
+        const amounts = [1, 3, 5].map(amount => utils.toEther(amount));
+        const destinationAccount = accounts[9];
+        const initialBalance = await token.balanceOf(destinationAccount);
+        const amountsSum = amounts.reduce((a, b) => a.add(b), utils.toEther(0));
+        const expectedBalance = initialBalance.add(amountsSum);
+
+        for (const amount of amounts) {
+          await transferERC20(destinationAccount, amount);
+        }
+
+        assertEtherEqual(
+          await token.balanceOf(destinationAccount),
+          expectedBalance
+        );
+      });
+
       it('should transfer token to several accounts', async () => {
+        const amount = utils.toEther(10);
         const destinations = await getDestinations(5);
 
-        // sign all transfers
+        // sign all token transfers
         const tokenTransfer = new MultiSigERC20Transfer(web3, instance, token);
 
         const nonce = await instance.nonce();
@@ -238,7 +273,7 @@ contract('TipsWallet', accounts => {
           })
         );
 
-        // execute all transfers
+        // execute all token transfers
         for (const { signatures, destination } of specifications) {
           await tokenTransfer.execute(signatures, destination.account, amount);
 
