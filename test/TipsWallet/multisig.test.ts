@@ -2,41 +2,37 @@ import { assert } from 'chai';
 
 import * as Web3 from 'web3';
 
-import {
-  DepositEvent,
-  ERC20,
-  ExecutedEvent,
-  SignHashArtifacts,
-  TipsWallet
-} from 'signhash';
+import { ERC20, ExecutedEvent, MultiSig, SignHashArtifacts } from 'signhash';
 import { ContractContextDefinition, TransactionResult } from 'truffle';
 import { AnyNumber } from 'web3';
 
 import {
   ExecuteCommand,
   getData,
-  SetOwnersCommand,
   Signature,
   TransferCommand,
   TransferERC20Command
-} from '../multisig';
-import { Web3Utils } from '../utils';
+} from '../../multisig';
+import { Web3Utils } from '../../utils';
 
 import {
   assertEtherEqual,
   assertNumberEqual,
   assertThrowsInvalidOpcode,
   findLastLog
-} from './helpers';
+} from '../helpers';
 
 declare const web3: Web3;
 declare const artifacts: SignHashArtifacts;
 declare const contract: ContractContextDefinition;
 
-const TipsWalletContract = artifacts.require('./TipsWallet.sol');
-const TestERC20TokenContract = artifacts.require('./TestERC20Token.sol');
+const MultiSigContract = artifacts.require('./TipsWallet/MultiSig.sol');
 
-contract('TipsWallet', accounts => {
+const TestERC20TokenContract = artifacts.require(
+  './TipsWallet/TestERC20Token.sol'
+);
+
+contract('MultiSig', accounts => {
   const deployer = accounts[0];
   const defaultAccount = accounts[9];
   const ownerSets = [[accounts[2]], accounts.slice(1, 3), accounts.slice(2, 6)];
@@ -44,18 +40,18 @@ contract('TipsWallet', accounts => {
   describe('#ctor', () => {
     it('should not allow empty list of owners', async () => {
       await assertThrowsInvalidOpcode(async () => {
-        await TipsWalletContract.new([], { from: deployer });
+        await MultiSigContract.new([], { from: deployer });
       });
     });
   });
 
   ownerSets.map(owners => {
-    context(`When ${owners.length} owners`, () => {
+    context(`When wallet has ${owners.length} owners`, () => {
       const utils = new Web3Utils(web3);
 
-      let instance: TipsWallet;
+      let instance: MultiSig;
 
-      async function tip(value: AnyNumber, from: Address = defaultAccount) {
+      async function deposit(value: AnyNumber, from: Address = defaultAccount) {
         return await instance.sendTransaction({
           from,
           to: instance.address,
@@ -64,46 +60,27 @@ contract('TipsWallet', accounts => {
       }
 
       beforeEach(async () => {
-        instance = await TipsWalletContract.new(owners, { from: deployer });
+        instance = await MultiSigContract.new(owners, { from: deployer });
       });
 
       describe('#fallback', () => {
         it('should not consume more than 23000 gas', async () => {
-          const result = await tip(utils.toEther(0.1));
+          const result = await deposit(utils.toEther(0.1));
 
           assert.isAtMost(result.receipt.gasUsed, 23000);
         });
 
         it('should increase balance', async () => {
           const value = utils.toEther(1);
-          await tip(value);
+          await deposit(value);
 
           assertEtherEqual(value, await utils.getBalance(instance.address));
-        });
-
-        it('should emit Deposit event when received Ether', async () => {
-          const value = utils.toEther(1);
-          const trans = await tip(value);
-
-          const log = findLastLog(trans, 'Deposit');
-          assert.isOk(log);
-
-          const event = log.args as DepositEvent;
-          assert.isOk(event);
-          assert.equal(event.from, defaultAccount);
-          assertEtherEqual(event.value, value);
-        });
-
-        it('should not emit Deposit event when value is 0', async () => {
-          const trans = await tip(0);
-          const log = findLastLog(trans, 'Deposit');
-          assert.isNotOk(log);
         });
       });
 
       describe('#ctor', () => {
         it('should set owners', async () => {
-          assert.deepEqual(await instance.owners(), owners);
+          assert.deepEqual(await instance.listOwners(), owners);
         });
       });
 
@@ -147,7 +124,7 @@ contract('TipsWallet', accounts => {
         }
 
         beforeEach(async () => {
-          await tip(utils.toEther(1));
+          await deposit(utils.toEther(1));
 
           dummyCommand = new DummyCommand();
         });
@@ -155,7 +132,7 @@ contract('TipsWallet', accounts => {
         it('should emit Executed event', async () => {
           const nonce = await instance.nonce();
           const signatures = await Promise.all(
-            owners.map(async owner => dummyCommand.sign(owner, nonce))
+            owners.map(owner => dummyCommand.sign(owner, nonce))
           );
           const tx = await dummyCommand.execute(signatures);
 
@@ -187,7 +164,7 @@ contract('TipsWallet', accounts => {
 
           const nonce = await instance.nonce();
           const signatures = await Promise.all(
-            strangers.map(async owner => dummyCommand.sign(owner, nonce))
+            strangers.map(owner => dummyCommand.sign(owner, nonce))
           );
 
           await assertThrowsInvalidOpcode(async () => {
@@ -200,7 +177,7 @@ contract('TipsWallet', accounts => {
             const reversed = owners.reverse();
             const nonce = await instance.nonce();
             const signatures = await Promise.all(
-              reversed.map(async owner => dummyCommand.sign(owner, nonce))
+              reversed.map(owner => dummyCommand.sign(owner, nonce))
             );
 
             await assertThrowsInvalidOpcode(async () => {
@@ -212,7 +189,7 @@ contract('TipsWallet', accounts => {
         it('should throw on replay attack', async () => {
           const nonce = await instance.nonce();
           const signatures = await Promise.all(
-            owners.map(async owner => dummyCommand.sign(owner, nonce))
+            owners.map(owner => dummyCommand.sign(owner, nonce))
           );
 
           await dummyCommand.execute(signatures);
@@ -235,7 +212,7 @@ contract('TipsWallet', accounts => {
           }
 
           beforeEach(async () => {
-            await tip(utils.toEther(1));
+            await deposit(utils.toEther(1));
 
             transferCommand = new TransferCommand(web3, instance);
           });
@@ -434,14 +411,13 @@ contract('TipsWallet', accounts => {
                   initialTokenBalance: await token.balanceOf(account)
                 },
                 signatures: await Promise.all(
-                  owners.map(
-                    async owner =>
-                      await transferERC20Command.sign(
-                        owner,
-                        nonce.add(index),
-                        account,
-                        amount
-                      )
+                  owners.map(owner =>
+                    transferERC20Command.sign(
+                      owner,
+                      nonce.add(index),
+                      account,
+                      amount
+                    )
                   )
                 )
               }))
@@ -464,124 +440,43 @@ contract('TipsWallet', accounts => {
               );
             }
           });
-        });
-      });
 
-      describe('#setOwners', () => {
-        let setOwnersCommand: SetOwnersCommand;
-
-        async function setOwners(newOwners: Address[]) {
-          const nonce = await instance.nonce();
-
-          const signatures = await Promise.all(
-            owners.map(owner => setOwnersCommand.sign(owner, nonce, newOwners))
-          );
-
-          return await setOwnersCommand.execute(signatures, newOwners);
-        }
-
-        beforeEach(async () => {
-          setOwnersCommand = new SetOwnersCommand(web3, instance);
-        });
-
-        it('should set a single owner', async () => {
-          const newOwners = [accounts[6]];
-          await setOwners(newOwners);
-
-          assert.deepEqual(await instance.owners(), newOwners);
-        });
-
-        it('should set several owners', async () => {
-          const newOwners = accounts.slice(6, 10);
-          await setOwners(newOwners);
-
-          assert.deepEqual(await instance.owners(), newOwners);
-        });
-
-        it('should not allow empty list of owners', async () => {
-          await assertThrowsInvalidOpcode(async () => {
-            await setOwners([]);
-          });
-        });
-
-        it('should throw when not signed', async () => {
-          const newOwners = accounts.slice(6, 10);
-          await assertThrowsInvalidOpcode(async () => {
-            await setOwnersCommand.execute([], newOwners);
-          });
-        });
-
-        if (owners.length > 1) {
-          owners.map(async (owner, index) =>
-            it(`should throw when signed only by #${index + 1}`, async () => {
-              const newOwners = accounts.slice(6, 10);
-              const nonce = await instance.nonce();
-              const signature = await setOwnersCommand.sign(
-                owner,
-                nonce,
-                newOwners
-              );
-
-              await assertThrowsInvalidOpcode(async () => {
-                await setOwnersCommand.execute([signature], newOwners);
-              });
-            })
-          );
-        }
-
-        it('should throw when signed by other accounts', async () => {
-          const newOwners = accounts.slice(6, 10);
-          const strangers = accounts.slice(4, 4 + owners.length);
-          const nonce = await instance.nonce();
-          const signatures = await Promise.all(
-            strangers.map(async owner =>
-              setOwnersCommand.sign(owner, nonce, newOwners)
-            )
-          );
-
-          await assertThrowsInvalidOpcode(async () => {
-            await setOwnersCommand.execute(signatures, newOwners);
-          });
-        });
-
-        if (owners.length > 1) {
-          it('should throw when signed by owners in wrong order', async () => {
-            const newOwners = accounts.slice(6, 10);
-            const reversed = owners.reverse();
+          it('should throw on nonce reuse', async () => {
             const nonce = await instance.nonce();
-            const signatures = await Promise.all(
-              reversed.map(async owner =>
-                setOwnersCommand.sign(owner, nonce, newOwners)
+            const amount = utils.toEther(1);
+            const tx2Destination = accounts[6];
+            const tx2Amount = utils.toEther(2);
+
+            const tx1Signatures = await Promise.all(
+              owners.map(owner =>
+                transferERC20Command.sign(owner, nonce, defaultAccount, amount)
               )
             );
 
+            const tx2Signatures = await Promise.all(
+              owners.map(owner =>
+                transferERC20Command.sign(
+                  owner,
+                  nonce, // NOTICE: the same nonce as previously
+                  tx2Destination,
+                  tx2Amount
+                )
+              )
+            );
+
+            await transferERC20Command.execute(
+              tx1Signatures,
+              defaultAccount,
+              amount
+            );
+
             await assertThrowsInvalidOpcode(async () => {
-              await setOwnersCommand.execute(signatures, newOwners);
+              await transferERC20Command.execute(
+                tx2Signatures,
+                tx2Destination,
+                tx2Amount
+              );
             });
-          });
-        }
-
-        it('should throw on nonce reuse', async () => {
-          const nonce = await instance.nonce();
-          const tx1Owners = accounts.slice(6, 10);
-          const tx2Owners = accounts.slice(5, 8);
-
-          const tx1Signatures = owners.map(owner =>
-            setOwnersCommand.sign(owner, nonce, tx1Owners)
-          );
-
-          const tx2Signatures = owners.map(owner =>
-            setOwnersCommand.sign(
-              owner,
-              nonce, // NOTICE: the same nonce as previously
-              tx2Owners
-            )
-          );
-
-          await setOwnersCommand.execute(tx1Signatures, tx1Owners);
-
-          await assertThrowsInvalidOpcode(async () => {
-            await setOwnersCommand.execute(tx2Signatures, tx2Owners);
           });
         });
       });

@@ -3,8 +3,8 @@ import { Deployer } from 'truffle';
 
 declare const artifacts: SignHashArtifacts;
 
-const TipsWallet = artifacts.require('./TipsWallet.sol');
-const SignHash = artifacts.require('./SignHash.sol');
+const TipsWallet = artifacts.require('./TipsWallet/TipsWallet.sol');
+const SignHash = artifacts.require('./SignHash/SignHash.sol');
 
 async function deploy(deployer: Deployer) {
   await deployer.deploy(TipsWallet, [

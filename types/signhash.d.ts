@@ -71,12 +71,10 @@ declare module 'signhash' {
     }
 
     interface MultiSig extends ContractBase {
-      setOwners(
-        v: number[],
-        r: string[],
-        s: string[],
-        newOwners: Address[]
-      ): Promise<TransactionResult>;
+      nonce(): Promise<BigNumber>;
+
+      owners(index: number): Promise<Address>;
+      listOwners(): Promise<Address[]>;
 
       execute(
         v: number[],
@@ -84,19 +82,22 @@ declare module 'signhash' {
         s: string[],
         to: Address,
         value: AnyNumber,
-        data: string
+        data: string,
+        options?: TransactionOptions
       ): Promise<TransactionResult>;
     }
 
-    interface TipsWallet extends MultiSig {
-      owners(): Promise<Address[]>;
-      nonce(): Promise<BigNumber>;
+    interface TransferableMultiSig extends MultiSig {
+      transferOwnership(
+        v: number[],
+        r: string[],
+        s: string[],
+        newOwners: Address[],
+        options?: TransactionOptions
+      ): Promise<TransactionResult>;
     }
 
-    interface DepositEvent {
-      from: Address;
-      value: BigNumber;
-    }
+    type TipsWallet = TransferableMultiSig;
 
     interface ExecutedEvent {
       destination: Address;

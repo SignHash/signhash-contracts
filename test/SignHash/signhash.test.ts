@@ -11,13 +11,13 @@ import {
   SignHashArtifacts
 } from 'signhash';
 import { ContractContextDefinition } from 'truffle';
-import { assertThrowsInvalidOpcode, findLastLog } from './helpers';
+import { assertThrowsInvalidOpcode, findLastLog } from '../helpers';
 
 declare const web3: Web3;
 declare const artifacts: SignHashArtifacts;
 declare const contract: ContractContextDefinition;
 
-const SignHashContract = artifacts.require('./SignHash.sol');
+const SignHashContract = artifacts.require('./SignHash/SignHash.sol');
 
 contract('SignHash', accounts => {
   const defaultAccount = accounts[0];

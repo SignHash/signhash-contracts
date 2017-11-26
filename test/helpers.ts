@@ -41,7 +41,7 @@ export function assertNumberEqual(
 ) {
   const actualNum = new BigNumber(actual);
   const expectNum = new BigNumber(expect);
-
+  /* solhint-disable no-empty-blocks */
   if (!actualNum.eq(expectNum)) {
     const div = decimals ? Math.pow(10, decimals) : 1;
     assert.fail(
