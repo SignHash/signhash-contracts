@@ -100,6 +100,7 @@ declare module 'truffle' {
 declare module 'truffle-config' {
   import { BigNumber } from 'bignumber.js';
   import { Provider } from 'web3';
+
   import * as Artifactor from 'truffle-artifactor';
   import * as Resolver from 'truffle-resolver';
 
@@ -125,15 +126,15 @@ declare module 'truffle-config' {
   };
 
   class Config {
-    artifactor: Artifactor;
-    contracts_build_directory: string;
-    contracts_directory: string;
-    migrations_directory: string;
-    network: string;
-    networks: { [network: string]: Network };
-    port: number;
-    provider: Provider;
-    resolver: Resolver;
+    public artifactor: Artifactor;
+    public contracts_build_directory: string;
+    public contracts_directory: string;
+    public migrations_directory: string;
+    public network: string;
+    public networks: { [network: string]: Network };
+    public port: number;
+    public provider: Provider;
+    public resolver: Resolver;
   }
 
   type Network = {
@@ -188,7 +189,7 @@ declare module 'truffle-artifactor' {
   class Artifactor {
     constructor(contractsBuildDirectory: string);
 
-    saveAll(contracts: ContractDefinitions): Promise<void>;
+    public saveAll(contracts: ContractDefinitions): Promise<void>;
   }
 
   namespace Artifactor {

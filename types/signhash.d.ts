@@ -1,4 +1,5 @@
 declare module 'signhash' {
+  import { BigNumber } from 'bignumber.js';
   import {
     AnyContract,
     Contract,
@@ -7,7 +8,6 @@ declare module 'signhash' {
     TransactionResult,
     TruffleArtifacts
   } from 'truffle';
-  import { BigNumber } from 'bignumber.js';
   import { AnyNumber } from 'web3';
 
   namespace signhash {
@@ -71,6 +71,13 @@ declare module 'signhash' {
     }
 
     interface MultiSig extends ContractBase {
+      setOwners(
+        v: number[],
+        r: string[],
+        s: string[],
+        newOwners: Address[]
+      ): Promise<TransactionResult>;
+
       execute(
         v: number[],
         r: string[],

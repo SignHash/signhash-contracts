@@ -1,28 +1,30 @@
+import { Signature } from './command';
+import { ExecuteCommand, getData } from './execution';
+
 import { ERC20, MultiSig } from 'signhash';
 import { TransactionResult } from 'truffle';
-import { getData, MultiSigTransaction, Signature } from './transaction';
 
 import * as Web3 from 'web3';
 
-export class MultiSigERC20Transfer {
-  private transaction: MultiSigTransaction;
+export class TransferERC20Command {
+  private readonly execution: ExecuteCommand;
 
   constructor(
     private web3: Web3,
     private instance: MultiSig,
     private token: ERC20
   ) {
-    this.transaction = new MultiSigTransaction(web3, instance);
+    this.execution = new ExecuteCommand(web3, instance);
   }
 
   public async sign(
     signer: Address,
+    nonce: Web3.AnyNumber,
     destination: Address,
-    amount: Web3.AnyNumber,
-    nonce: Web3.AnyNumber
+    amount: Web3.AnyNumber
   ): Promise<Signature> {
     const data = await getData(this.token.transfer, destination, amount);
-    return this.transaction.sign(signer, this.token.address, 0, nonce, data);
+    return this.execution.sign(signer, nonce, this.token.address, 0, data);
   }
 
   public async execute(
@@ -31,6 +33,6 @@ export class MultiSigERC20Transfer {
     amount: Web3.AnyNumber
   ): Promise<TransactionResult> {
     const data = await getData(this.token.transfer, destination, amount);
-    return this.transaction.execute(signatures, this.token.address, 0, data);
+    return this.execution.execute(signatures, this.token.address, 0, data);
   }
 }
