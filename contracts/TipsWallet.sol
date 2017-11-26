@@ -66,9 +66,9 @@ contract TipsWallet {
         onlyNonEmpty(newOwners)
         onlySigned(v, r, s, keccak256(byte(0x19), byte(0), this, newOwners, nonce))
     {
-        OwnersSet(msg.sender, newOwners);
-
         _owners = newOwners;
+
+        OwnersSet(msg.sender, newOwners);
     }
 
     //--- Public mutable functions
@@ -83,10 +83,10 @@ contract TipsWallet {
         public
         onlySigned(v, r, s, keccak256(byte(0x19), byte(0), this, destination, value, data, nonce))
     {
-        Executed(destination, nonce, value, data);
-
         /* solhint-disable avoid-call-value */
         require(destination.call.value(value)(data));
         /* solhint-enable avoid-call-value */
+
+        Executed(destination, nonce, value, data);
     }
 }

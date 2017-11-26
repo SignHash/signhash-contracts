@@ -40,17 +40,6 @@ contract('TipsWallet', accounts => {
   const deployer = accounts[0];
   const defaultAccount = accounts[9];
   const ownerSets = [[accounts[2]], accounts.slice(1, 3), accounts.slice(2, 6)];
-  const utils = new Web3Utils(web3);
-
-  let instance: TipsWallet;
-
-  async function tip(value: AnyNumber, from: Address = defaultAccount) {
-    return await instance.sendTransaction({
-      from,
-      to: instance.address,
-      value
-    });
-  }
 
   describe('#ctor', () => {
     it('should not allow empty list of owners', async () => {
@@ -62,6 +51,18 @@ contract('TipsWallet', accounts => {
 
   ownerSets.map(owners => {
     context(`When ${owners.length} owners`, () => {
+      const utils = new Web3Utils(web3);
+
+      let instance: TipsWallet;
+
+      async function tip(value: AnyNumber, from: Address = defaultAccount) {
+        return await instance.sendTransaction({
+          from,
+          to: instance.address,
+          value
+        });
+      }
+
       beforeEach(async () => {
         instance = await TipsWalletContract.new(owners, { from: deployer });
       });
@@ -208,10 +209,23 @@ contract('TipsWallet', accounts => {
           });
         }
 
+        it('should throw on replay attack', async () => {
+          const nonce = await instance.nonce();
+          const signatures = await Promise.all(
+            owners.map(async owner => dummyCommand.sign(owner, nonce))
+          );
+
+          await dummyCommand.execute(signatures);
+
+          await assertThrowsInvalidOpcode(async () => {
+            await dummyCommand.execute(signatures);
+          });
+        });
+
         describe('transfer Ether', () => {
           let transferCommand: TransferCommand;
 
-          async function transferEther(account: Address, value: AnyNumber) {
+          async function transfer(account: Address, value: AnyNumber) {
             const nonce = await instance.nonce();
             const signatures = owners.map(owner =>
               transferCommand.sign(owner, nonce, account, value)
@@ -231,7 +245,7 @@ contract('TipsWallet', accounts => {
             const initialBalance = await utils.getBalance(defaultAccount);
             const expectedBalance = initialBalance.add(value);
 
-            await transferEther(defaultAccount, value);
+            await transfer(defaultAccount, value);
 
             assertEtherEqual(
               await utils.getBalance(defaultAccount),
@@ -243,7 +257,7 @@ contract('TipsWallet', accounts => {
             const value = utils.toEther(0.1);
             const nonce = await instance.nonce();
 
-            const tx = await transferEther(defaultAccount, value);
+            const tx = await transfer(defaultAccount, value);
             assertExecutedEvent(tx, defaultAccount, nonce, value, '0x');
           });
 
@@ -257,7 +271,7 @@ contract('TipsWallet', accounts => {
             const expectedBalance = initialBalance.add(valuesSum);
 
             for (const value of values) {
-              await transferEther(defaultAccount, value);
+              await transfer(defaultAccount, value);
             }
 
             assertEtherEqual(
@@ -298,6 +312,36 @@ contract('TipsWallet', accounts => {
                 expectedBalance
               );
             }
+          });
+
+          it('should throw on nonce reuse', async () => {
+            const nonce = await instance.nonce();
+            const value = utils.toEther(0.1);
+            const tx2Destination = accounts[6];
+            const tx2Value = utils.toEther(0.2);
+
+            const tx1Signatures = owners.map(owner =>
+              transferCommand.sign(owner, nonce, defaultAccount, value)
+            );
+
+            const tx2Signatures = owners.map(owner =>
+              transferCommand.sign(
+                owner,
+                nonce, // NOTICE: the same nonce as previously
+                tx2Destination,
+                tx2Value
+              )
+            );
+
+            await transferCommand.execute(tx1Signatures, defaultAccount, value);
+
+            await assertThrowsInvalidOpcode(async () => {
+              await transferCommand.execute(
+                tx2Signatures,
+                tx2Destination,
+                tx2Value
+              );
+            });
           });
         });
 
@@ -516,6 +560,30 @@ contract('TipsWallet', accounts => {
             });
           });
         }
+
+        it('should throw on nonce reuse', async () => {
+          const nonce = await instance.nonce();
+          const tx1Owners = accounts.slice(6, 10);
+          const tx2Owners = accounts.slice(5, 8);
+
+          const tx1Signatures = owners.map(owner =>
+            setOwnersCommand.sign(owner, nonce, tx1Owners)
+          );
+
+          const tx2Signatures = owners.map(owner =>
+            setOwnersCommand.sign(
+              owner,
+              nonce, // NOTICE: the same nonce as previously
+              tx2Owners
+            )
+          );
+
+          await setOwnersCommand.execute(tx1Signatures, tx1Owners);
+
+          await assertThrowsInvalidOpcode(async () => {
+            await setOwnersCommand.execute(tx2Signatures, tx2Owners);
+          });
+        });
       });
     });
   });
