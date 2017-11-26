@@ -3,7 +3,6 @@ pragma solidity 0.4.18;
 
 contract TestERC20Token {
 
-    //--- Storage
     string public name = "TestERC20";
     string public symbol = "TEST";
     uint256 public decimals = 18;
@@ -12,17 +11,14 @@ contract TestERC20Token {
     mapping(address => uint256) private balances;
     mapping (address => mapping (address => uint256)) private allowed;
 
-    //--- Constructor
     function TestERC20Token() public {
         totalSupply = 10000 * (10 ** decimals);
         balances[msg.sender] = totalSupply;
     }
 
-    //--- Events
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint256 value);
 
-    //--- Public mutable functions
     /* solhint-disable no-simple-event-func-name */
     function transfer(address to, uint256 value) public returns (bool) {
     /* solhint-enable no-simple-event-func-name */
@@ -58,7 +54,6 @@ contract TestERC20Token {
         return true;
     }
 
-    //--- Public view functions
     function allowance(address owner, address spender) public view returns (uint256 remaining) {
         return allowed[owner][spender];
     }
@@ -67,7 +62,6 @@ contract TestERC20Token {
         return balances[owner];
     }
 
-    //--- Private pure functions
     function safeSub(uint256 a, uint256 b) private pure returns (uint256) {
         assert(b <= a);
         return a - b;

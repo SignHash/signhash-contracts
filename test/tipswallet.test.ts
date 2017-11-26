@@ -3,7 +3,7 @@ import * as Web3 from 'web3';
 import { SignHashArtifacts, TipsWallet } from 'signhash';
 import { ContractContextDefinition } from 'truffle';
 
-import { assertThrowsInvalidOpcode } from '../helpers';
+import { assertThrowsInvalidOpcode } from './helpers';
 
 declare const web3: Web3;
 declare const artifacts: SignHashArtifacts;

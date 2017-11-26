@@ -5,24 +5,20 @@ import "./AddressSet.sol";
 
 contract SignHash {
 
-    //--- Definitions
     using AddressSet for AddressSet.Data;
 
-    //--- Storage
     // hash to signers
     mapping (bytes32 => AddressSet.Data) private signers;
 
     // signer to proofs (method to value)
     mapping (address => mapping (string => string)) private proofs;
 
-    //--- Events
     event Signed(bytes32 indexed hash, address indexed signer);
     event Revoked(bytes32 indexed hash, address indexed signer);
 
     event ProofAdded(address indexed signer, string method, string value);
     event ProofRemoved(address indexed signer, string method);
 
-    //--- Public mutable functions
     function sign(bytes32 hash) public {
         require(hash != bytes32(0));
 
@@ -59,7 +55,6 @@ contract SignHash {
         ProofRemoved(msg.sender, method);
     }
 
-    //--- Public constant functions
     function getSigners(bytes32 hash, uint256 maxCount)
         public
         view

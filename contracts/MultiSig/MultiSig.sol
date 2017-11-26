@@ -3,19 +3,18 @@ pragma solidity 0.4.18;
 
 contract MultiSig {
 
-    //--- Storage
     uint256 public nonce;
     address[] public owners;
 
-    //--- Constructor
     function MultiSig(address[] _owners)
         public
-        onlyNonEmpty(_owners)
+        onlyNotEmpty(_owners)
     {
         owners = _owners;
     }
 
-    //--- Modifiers
+    event Executed(address indexed destination, uint256 nonce, uint256 value, bytes data);
+
     modifier onlySigned(uint8[] v, bytes32[] r, bytes32[] s, bytes32 hash) {
         require(
             (v.length == owners.length) &&
@@ -33,25 +32,19 @@ contract MultiSig {
         nonce += 1;
     }
 
-    modifier onlyNonEmpty(address[] addresses) {
+    modifier onlyNotEmpty(address[] addresses) {
         require(addresses.length > 0);
         _;
     }
 
-    //--- Events
-    event Executed(address indexed destination, uint256 nonce, uint256 value, bytes data);
-
-    //--- Fallback function
     /* solhint-disable no-empty-blocks */
     function() public payable {}
     /* solhint-disable no-empty-blocks */
 
-    //--- Public view functions
     function listOwners() public view returns (address[]) {
         return owners;
     }
 
-    //--- Public mutable functions
     function execute(
         uint8[] v,
         bytes32[] r,
