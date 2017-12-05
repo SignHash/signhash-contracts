@@ -1,19 +1,20 @@
-import { SignHashArtifacts } from 'signhash';
-import { Deployer } from 'truffle';
+import { SignHashArtifacts, SignHashDeployer } from 'signhash';
 
 declare const artifacts: SignHashArtifacts;
 
 const TipsWallet = artifacts.require('./TipsWallet.sol');
 const SignHash = artifacts.require('./SignHash.sol');
 
-async function deploy(deployer: Deployer) {
-  await deployer.deploy(TipsWallet, [
-    '0x627306090abab3a6e1400e9345bc60c78a8bef57'
-  ]);
+async function deploy(deployer: SignHashDeployer) {
+  // TODO: change wallet parameters before mainnet deployment
+  const owners = ['0x4c7989d46daDb29ee494E6c1b87f60de0c1c9372'];
+  const recoveryConfirmations = 5 * 1e5;
+  await deployer.deploy(TipsWallet, owners, recoveryConfirmations);
+
   await deployer.deploy(SignHash);
 }
 
-function migrate(deployer: Deployer) {
+function migrate(deployer: SignHashDeployer) {
   deployer.then(() => deploy(deployer));
 }
 

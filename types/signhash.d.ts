@@ -4,6 +4,7 @@ declare module 'signhash' {
     AnyContract,
     Contract,
     ContractBase,
+    Deployer,
     TransactionOptions,
     TransactionResult,
     TruffleArtifacts
@@ -121,6 +122,7 @@ declare module 'signhash' {
     interface TipsWalletContract extends Contract<TipsWallet> {
       'new'(
         owners: Address[],
+        recoveryConfirmations: AnyNumber,
         options?: TransactionOptions
       ): Promise<TipsWallet>;
     }
@@ -131,6 +133,15 @@ declare module 'signhash' {
       require(name: './AddressSet.sol'): AddressSetLibrary;
       require(name: './SignHash.sol'): SignHashContract;
       require(name: './TipsWallet.sol'): TipsWalletContract;
+    }
+
+    interface SignHashDeployer extends Deployer {
+      deploy(contract: SignHashContract): Promise<void>;
+      deploy(
+        contract: TipsWalletContract,
+        owners: Address[],
+        recoveryConfirmations: AnyNumber
+      ): Promise<void>;
     }
 
     interface ERC20 extends ContractBase {

@@ -17,7 +17,7 @@ contract('TipsWallet', accounts => {
   describe('#ctor', () => {
     it('should not allow empty list of owners', async () => {
       await assertThrowsInvalidOpcode(async () => {
-        await TipsWalletContract.new([], { from: deployer });
+        await TipsWalletContract.new([], 1000, { from: deployer });
       });
     });
   });
