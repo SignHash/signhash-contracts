@@ -14,7 +14,7 @@ declare const artifacts: SignHashArtifacts;
 declare const contract: ContractContextDefinition;
 
 const TransferableMultiSigContract = artifacts.require(
-  './TipsWallet/TransferableMultiSig.sol'
+  './MultiSig/TransferableMultiSig.sol'
 );
 
 contract('TransferableMultiSigContract', accounts => {

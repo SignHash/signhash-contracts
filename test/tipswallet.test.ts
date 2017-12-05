@@ -9,7 +9,7 @@ declare const web3: Web3;
 declare const artifacts: SignHashArtifacts;
 declare const contract: ContractContextDefinition;
 
-const TipsWalletContract = artifacts.require('./TipsWallet/TipsWallet.sol');
+const TipsWalletContract = artifacts.require('./TipsWallet.sol');
 
 contract('TipsWallet', accounts => {
   const deployer = accounts[0];

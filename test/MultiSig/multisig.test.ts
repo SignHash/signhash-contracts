@@ -26,11 +26,9 @@ declare const web3: Web3;
 declare const artifacts: SignHashArtifacts;
 declare const contract: ContractContextDefinition;
 
-const MultiSigContract = artifacts.require('./TipsWallet/MultiSig.sol');
+const MultiSigContract = artifacts.require('./MultiSig/MultiSig.sol');
 
-const TestERC20TokenContract = artifacts.require(
-  './TipsWallet/TestERC20Token.sol'
-);
+const TestERC20TokenContract = artifacts.require('./Test/TestERC20Token.sol');
 
 contract('MultiSig', accounts => {
   const deployer = accounts[0];

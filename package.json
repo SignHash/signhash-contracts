@@ -9,7 +9,7 @@
   "files": [
     "bin/*.js",
     "build/contracts/*.json",
-    "contracts/*.sol",
+    "contracts/**/*.sol",
     "migrations/*.js",
     "utils/*.js",
     "index.js",
