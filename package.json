@@ -69,6 +69,7 @@
     "winston": "^2.4.0"
   },
   "devDependencies": {
+    "@digix/tempo": "^0.2.0",
     "@types/chai": "^4.0.4",
     "@types/es6-promise": "0.0.33",
     "@types/mkdirp": "^0.5.1",

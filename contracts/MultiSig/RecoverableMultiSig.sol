@@ -17,6 +17,8 @@ contract RecoverableMultiSig is TransferableMultiSig {
     }
 
     event RecoveryStarted(address indexed from, address[] newOwners);
+    event RecoveryCancelled(address indexed from);
+    event RecoveryConfirmed(address indexed from, address[] newOwners);
 
     modifier onlyOwner() {
         require(isOwner(msg.sender));
@@ -46,6 +48,8 @@ contract RecoverableMultiSig is TransferableMultiSig {
     {
         recoveryBlock = block.number;
         recoveryHash = keccak256(newOwners);
+
+        RecoveryStarted(msg.sender, newOwners);
     }
 
     function cancelRecovery()
@@ -54,6 +58,8 @@ contract RecoverableMultiSig is TransferableMultiSig {
         onlyRecoveryStarted
     {
         clearRecovery();
+
+        RecoveryCancelled(msg.sender);
     }
 
     function confirmRecovery(address[] newOwners)
@@ -65,6 +71,8 @@ contract RecoverableMultiSig is TransferableMultiSig {
         owners = newOwners;
 
         clearRecovery();
+
+        RecoveryConfirmed(msg.sender, newOwners);
     }
 
     function isOwner(address account) public view returns (bool) {

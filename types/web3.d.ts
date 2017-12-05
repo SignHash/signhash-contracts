@@ -24,6 +24,7 @@ declare module 'web3' {
 
   class Web3 {
     public eth: {
+      blockNumber: BigNumber;
       sendTransaction(txData: Web3.TxData, callback: Callback<string>): void;
       getBalance(account: Address, callback: Callback<BigNumber>): BigNumber;
       sign(account: Address, text: string): string;

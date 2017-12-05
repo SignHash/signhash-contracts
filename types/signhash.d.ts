@@ -88,6 +88,13 @@ declare module 'signhash' {
       ): Promise<TransactionResult>;
     }
 
+    interface ExecutedEvent {
+      destination: Address;
+      nonce: BigNumber;
+      value: BigNumber;
+      data: string;
+    }
+
     interface TransferableMultiSig extends MultiSig {
       transferOwnership(
         v: number[],
@@ -98,14 +105,39 @@ declare module 'signhash' {
       ): Promise<TransactionResult>;
     }
 
-    type TipsWallet = TransferableMultiSig;
+    interface RecoverableMultiSig extends MultiSig {
+      recoveryConfirmations(): Promise<BigNumber>;
+      recoveryBlock(): Promise<BigNumber>;
+      recoveryHash(): Promise<string>;
 
-    interface ExecutedEvent {
-      destination: Address;
-      nonce: BigNumber;
-      value: BigNumber;
-      data: string;
+      startRecovery(
+        newOwners: Address[],
+        options?: TransactionOptions
+      ): Promise<TransactionResult>;
+
+      cancelRecovery(options?: TransactionOptions): Promise<TransactionResult>;
+
+      confirmRecovery(
+        newOwners: Address[],
+        options?: TransactionOptions
+      ): Promise<TransactionResult>;
     }
+
+    interface RecoveryStartedEvent {
+      from: Address;
+      newOwners: Address[];
+    }
+
+    interface RecoveryCancelledEvent {
+      from: Address;
+    }
+
+    interface RecoveryConfirmedEvent {
+      from: Address;
+      newOwners: Address[];
+    }
+
+    type TipsWallet = RecoverableMultiSig;
 
     interface MigrationsContract extends Contract<Migrations> {
       'new'(options?: TransactionOptions): Promise<Migrations>;
