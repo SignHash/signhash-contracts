@@ -7,12 +7,15 @@ declare module 'truffle' {
   import { TxData } from 'web3';
 
   namespace truffle {
-    interface ContractContextDefinition extends Mocha.IContextDefinition {
-      (
-        description: string,
-        callback: (accounts: Address[]) => void
-      ): Mocha.ISuite;
-    }
+    type ContractCallback = (
+      this: Mocha.ISuiteCallbackContext,
+      accounts: Address[]
+    ) => void;
+
+    type ContractContextDefinition = (
+      description: string,
+      callback: ContractCallback
+    ) => Mocha.ISuite;
 
     interface Request {
       method: 'eth_call' | 'eth_sendTransaction';
