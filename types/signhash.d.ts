@@ -105,7 +105,7 @@ declare module 'signhash' {
       ): Promise<TransactionResult>;
     }
 
-    interface RecoverableMultiSig extends MultiSig {
+    interface RecoverableMultiSig extends TransferableMultiSig {
       recoveryConfirmations(): Promise<BigNumber>;
       recoveryBlock(): Promise<BigNumber>;
       recoveryHash(): Promise<string>;

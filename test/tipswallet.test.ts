@@ -12,6 +12,7 @@ import {
   testConfirmRecovery,
   testStartRecovery
 } from './MultiSig/recoverablemultisig.test';
+import { testTransferOwnership } from './MultiSig/transferablemultisig.test';
 
 declare const web3: Web3;
 declare const artifacts: SignHashArtifacts;
@@ -49,6 +50,7 @@ contract('TipsWallet', accounts => {
         });
       });
 
+      describe('#transferOwnership', () => testTransferOwnership(ctx));
       describe('#startRecovery', () => testStartRecovery(ctx));
       describe('#cancelRecovery', () => testCancelRecovery(ctx));
       describe('#confirmRecovery', () => testConfirmRecovery(ctx));
