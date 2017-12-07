@@ -29,8 +29,8 @@ const RecoverableMultiSigContract = artifacts.require(
   './MultiSig/RecoverableMultiSig.sol'
 );
 
-export class RecoverableMultiSigTestContext {
-  public instance: RecoverableMultiSig;
+export class MultiSigTestContext<T extends RecoverableMultiSig> {
+  public instance: T;
 
   public constructor(public accounts: Address[], public owners: Address[]) {}
 }
@@ -47,7 +47,10 @@ contract('RecoverableMultiSigContract', accounts => {
   const ownerSets = [[accounts[2]], accounts.slice(1, 3), accounts.slice(2, 6)];
   ownerSets.map(owners => {
     context(`When wallet has ${owners.length} owners`, () => {
-      const ctx = new RecoverableMultiSigTestContext(accounts, owners);
+      const ctx = new MultiSigTestContext<RecoverableMultiSig>(
+        accounts,
+        owners
+      );
 
       beforeEach(async () => {
         const recoveryConfirmations = 100;
@@ -70,7 +73,9 @@ contract('RecoverableMultiSigContract', accounts => {
   });
 });
 
-export function testStartRecovery(ctx: RecoverableMultiSigTestContext) {
+export function testStartRecovery(
+  ctx: MultiSigTestContext<RecoverableMultiSig>
+) {
   const nonOwner = ctx.accounts[0];
   const newOwners = ctx.accounts.slice(6, 9);
 
@@ -134,7 +139,9 @@ export function testStartRecovery(ctx: RecoverableMultiSigTestContext) {
   });
 }
 
-export function testCancelRecovery(ctx: RecoverableMultiSigTestContext) {
+export function testCancelRecovery(
+  ctx: MultiSigTestContext<RecoverableMultiSig>
+) {
   const nonOwner = ctx.accounts[0];
   const newOwners = ctx.accounts.slice(6, 9);
 
@@ -200,7 +207,9 @@ export function testCancelRecovery(ctx: RecoverableMultiSigTestContext) {
   });
 }
 
-export function testConfirmRecovery(ctx: RecoverableMultiSigTestContext) {
+export function testConfirmRecovery(
+  ctx: MultiSigTestContext<RecoverableMultiSig>
+) {
   const nonOwner = ctx.accounts[0];
   const newOwners = ctx.accounts.slice(6, 9);
 
