@@ -170,32 +170,30 @@ export function testCancelRecovery(
 
     ctx.owners.map((owner, index) => {
       context(`When called by #${index + 1} owner`, () => {
-        context(`When called by #${index + 1} owner`, () => {
-          it('should reset recoveryHash', async () => {
-            await ctx.instance.cancelRecovery({ from: owner });
+        it('should reset recoveryHash', async () => {
+          await ctx.instance.cancelRecovery({ from: owner });
 
-            assert.equal(
-              await ctx.instance.recoveryHash(),
-              `0x${'0'.repeat(64)}`
-            );
+          assert.equal(
+            await ctx.instance.recoveryHash(),
+            `0x${'0'.repeat(64)}`
+          );
+        });
+
+        it('should reset recoveryBlock', async () => {
+          await ctx.instance.cancelRecovery({ from: owner });
+
+          assertNumberEqual(await ctx.instance.recoveryBlock(), 0);
+        });
+
+        it('should emit RecoveryCancelled event', async () => {
+          const trans = await ctx.instance.cancelRecovery({
+            from: owner
           });
 
-          it('should reset recoveryBlock', async () => {
-            await ctx.instance.cancelRecovery({ from: owner });
+          const log = findLastLog(trans, 'RecoveryCancelled');
+          const event: RecoveryCancelledEvent = log.args;
 
-            assertNumberEqual(await ctx.instance.recoveryBlock(), 0);
-          });
-
-          it('should emit RecoveryCancelled event', async () => {
-            const trans = await ctx.instance.cancelRecovery({
-              from: owner
-            });
-
-            const log = findLastLog(trans, 'RecoveryCancelled');
-            const event: RecoveryCancelledEvent = log.args;
-
-            assert.equal(event.from, owner);
-          });
+          assert.equal(event.from, owner);
         });
       });
     });
