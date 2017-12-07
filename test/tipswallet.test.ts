@@ -7,6 +7,7 @@ import { ContractContextDefinition } from 'truffle';
 
 import { assertThrowsInvalidOpcode } from './helpers';
 import { MultiSigTestContext } from './MultiSig/context';
+import { testExecute, testFallback } from './MultiSig/multisig.test';
 import {
   testCancelRecovery,
   testConfirmRecovery,
@@ -50,6 +51,8 @@ contract('TipsWallet', accounts => {
         });
       });
 
+      describe('#fallback', () => testFallback(ctx));
+      describe('#execute', () => testExecute(ctx));
       describe('#transferOwnership', () => testTransferOwnership(ctx));
       describe('#startRecovery', () => testStartRecovery(ctx));
       describe('#cancelRecovery', () => testCancelRecovery(ctx));
