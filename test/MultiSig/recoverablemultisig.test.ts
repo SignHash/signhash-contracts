@@ -20,6 +20,7 @@ import {
   assertThrowsInvalidOpcode,
   findLastLog
 } from '../helpers';
+import { MultiSigTestContext } from './context';
 
 declare const web3: Web3;
 declare const artifacts: SignHashArtifacts;
@@ -28,12 +29,6 @@ declare const contract: ContractContextDefinition;
 const RecoverableMultiSigContract = artifacts.require(
   './MultiSig/RecoverableMultiSig.sol'
 );
-
-export class MultiSigTestContext<T extends RecoverableMultiSig> {
-  public instance: T;
-
-  public constructor(public accounts: Address[], public owners: Address[]) {}
-}
 
 contract('RecoverableMultiSigContract', accounts => {
   describe('#ctor', () => {

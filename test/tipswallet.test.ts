@@ -6,8 +6,8 @@ import { SignHashArtifacts, TipsWallet } from 'signhash';
 import { ContractContextDefinition } from 'truffle';
 
 import { assertThrowsInvalidOpcode } from './helpers';
+import { MultiSigTestContext } from './MultiSig/context';
 import {
-  MultiSigTestContext,
   testCancelRecovery,
   testConfirmRecovery,
   testStartRecovery
