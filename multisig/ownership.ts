@@ -13,8 +13,8 @@ import * as Web3 from 'web3';
 export class TransferOwnershipCommand {
   private readonly transaction: MultiSigTransaction;
 
-  constructor(private web3: Web3, private instance: TransferableMultiSig) {
-    this.transaction = new MultiSigTransaction(web3, instance.address);
+  constructor(private web3: Web3, private multiSig: TransferableMultiSig) {
+    this.transaction = new MultiSigTransaction(web3, multiSig.address);
   }
 
   public sign(
@@ -32,6 +32,6 @@ export class TransferOwnershipCommand {
     newOwners: Address[]
   ): Promise<TransactionResult> {
     const { v, r, s } = groupSignatures(signatures);
-    return this.instance.transferOwnership(v, r, s, newOwners);
+    return this.multiSig.transferOwnership(v, r, s, newOwners);
   }
 }

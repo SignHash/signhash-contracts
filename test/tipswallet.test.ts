@@ -39,7 +39,7 @@ contract('TipsWallet', accounts => {
 
       beforeEach(async () => {
         const recoveryConfirmations = 100;
-        ctx.instance = await TipsWalletContract.new(
+        ctx.multisig = await TipsWalletContract.new(
           owners,
           recoveryConfirmations
         );
@@ -47,7 +47,7 @@ contract('TipsWallet', accounts => {
 
       describe('#ctor', () => {
         it('should set owners', async () => {
-          assert.deepEqual(await ctx.instance.listOwners(), owners);
+          assert.deepEqual(await ctx.multisig.listOwners(), owners);
         });
       });
 

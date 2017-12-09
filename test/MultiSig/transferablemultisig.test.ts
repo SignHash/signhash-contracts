@@ -36,12 +36,12 @@ contract('TransferableMultiSigContract', accounts => {
       );
 
       beforeEach(async () => {
-        ctx.instance = await TransferableMultiSigContract.new(owners);
+        ctx.multisig = await TransferableMultiSigContract.new(owners);
       });
 
       describe('#ctor', () => {
         it('should set owners', async () => {
-          assert.deepEqual(await ctx.instance.listOwners(), owners);
+          assert.deepEqual(await ctx.multisig.listOwners(), owners);
         });
       });
 
@@ -58,7 +58,7 @@ export function testTransferOwnership(
   let transferOwnershipCommand: TransferOwnershipCommand;
 
   async function transferOwnership(owners: Address[]) {
-    const nonce = await ctx.instance.nonce();
+    const nonce = await ctx.multisig.nonce();
 
     const signatures = await Promise.all(
       ctx.owners.map(signer =>
@@ -70,10 +70,10 @@ export function testTransferOwnership(
   }
 
   beforeEach(async () => {
-    transferOwnershipCommand = new TransferOwnershipCommand(web3, ctx.instance);
+    transferOwnershipCommand = new TransferOwnershipCommand(web3, ctx.multisig);
 
     // preconditions
-    assert.deepEqual(ctx.owners, await ctx.instance.listOwners());
+    assert.deepEqual(ctx.owners, await ctx.multisig.listOwners());
     assert.notDeepEqual(newOwners, ctx.owners);
   });
 
@@ -81,13 +81,13 @@ export function testTransferOwnership(
     const singleOwner = [ctx.accounts[6]];
     await transferOwnership(singleOwner);
 
-    assert.deepEqual(await ctx.instance.listOwners(), singleOwner);
+    assert.deepEqual(await ctx.multisig.listOwners(), singleOwner);
   });
 
   it('should set several owners', async () => {
     await transferOwnership(newOwners);
 
-    assert.deepEqual(await ctx.instance.listOwners(), newOwners);
+    assert.deepEqual(await ctx.multisig.listOwners(), newOwners);
   });
 
   it('should not allow empty list of owners', async () => {
@@ -105,7 +105,7 @@ export function testTransferOwnership(
   if (ctx.owners.length > 1) {
     ctx.owners.map(async (owner, index) =>
       it(`should throw when signed only by #${index + 1}`, async () => {
-        const nonce = await ctx.instance.nonce();
+        const nonce = await ctx.multisig.nonce();
         const signature = await transferOwnershipCommand.sign(
           owner,
           nonce,
@@ -121,7 +121,7 @@ export function testTransferOwnership(
 
   it('should throw when signed by other accounts', async () => {
     const strangers = ctx.accounts.slice(4, 4 + ctx.owners.length);
-    const nonce = await ctx.instance.nonce();
+    const nonce = await ctx.multisig.nonce();
     const signatures = await Promise.all(
       strangers.map(owner =>
         transferOwnershipCommand.sign(owner, nonce, newOwners)
@@ -136,7 +136,7 @@ export function testTransferOwnership(
   if (ctx.owners.length > 1) {
     it('should throw when signed by owners in wrong order', async () => {
       const reversed = ctx.owners.reverse();
-      const nonce = await ctx.instance.nonce();
+      const nonce = await ctx.multisig.nonce();
       const signatures = await Promise.all(
         reversed.map(owner =>
           transferOwnershipCommand.sign(owner, nonce, newOwners)
@@ -150,7 +150,7 @@ export function testTransferOwnership(
   }
 
   it('should throw on nonce reuse', async () => {
-    const nonce = await ctx.instance.nonce();
+    const nonce = await ctx.multisig.nonce();
     const tx1Owners = ctx.accounts.slice(6, 10);
     const tx2Owners = ctx.accounts.slice(5, 8);
 

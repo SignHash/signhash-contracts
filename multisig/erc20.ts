@@ -1,4 +1,4 @@
-import { ExecuteCommand, getData } from './execution';
+import { getData, MultiSigExecutor } from './executor';
 import { Signature } from './transaction';
 
 import { ERC20, MultiSig } from 'signhash';
@@ -7,14 +7,14 @@ import { TransactionResult } from 'truffle';
 import * as Web3 from 'web3';
 
 export class TransferERC20Command {
-  private readonly execution: ExecuteCommand;
+  private readonly execution: MultiSigExecutor;
 
   constructor(
     private web3: Web3,
-    private instance: MultiSig,
+    private multiSig: MultiSig,
     private token: ERC20
   ) {
-    this.execution = new ExecuteCommand(web3, instance);
+    this.execution = new MultiSigExecutor(web3, multiSig);
   }
 
   public async sign(

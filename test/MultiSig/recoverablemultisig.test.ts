@@ -49,7 +49,7 @@ contract('RecoverableMultiSigContract', accounts => {
 
       beforeEach(async () => {
         const recoveryConfirmations = 100;
-        ctx.instance = await RecoverableMultiSigContract.new(
+        ctx.multisig = await RecoverableMultiSigContract.new(
           owners,
           recoveryConfirmations
         );
@@ -57,7 +57,7 @@ contract('RecoverableMultiSigContract', accounts => {
 
       describe('#ctor', () => {
         it('should set owners', async () => {
-          assert.deepEqual(await ctx.instance.listOwners(), owners);
+          assert.deepEqual(await ctx.multisig.listOwners(), owners);
         });
       });
 
@@ -76,7 +76,7 @@ export function testStartRecovery(
 
   // preconditions
   beforeEach(async () => {
-    assert.deepEqual(ctx.owners, await ctx.instance.listOwners());
+    assert.deepEqual(ctx.owners, await ctx.multisig.listOwners());
     assert.notInclude(ctx.owners, nonOwner);
     assert.notDeepEqual(newOwners, ctx.owners);
   });
@@ -84,7 +84,7 @@ export function testStartRecovery(
   context(`When called by non-owner`, () => {
     it('should throw invalid opcode', async () => {
       await assertThrowsInvalidOpcode(async () => {
-        await ctx.instance.startRecovery(newOwners, { from: nonOwner });
+        await ctx.multisig.startRecovery(newOwners, { from: nonOwner });
       });
     });
   });
@@ -93,34 +93,34 @@ export function testStartRecovery(
     context(`When called by #${index + 1} owner`, () => {
       it('should set recoveryHash for a single account', async () => {
         const singleOwner = [newOwners[0]];
-        await ctx.instance.startRecovery(singleOwner, { from: owner });
+        await ctx.multisig.startRecovery(singleOwner, { from: owner });
 
         assert.equal(
-          await ctx.instance.recoveryHash(),
+          await ctx.multisig.recoveryHash(),
           hashAddresses(singleOwner)
         );
       });
 
       it('should set recoveryHash for multiple accounts', async () => {
-        await ctx.instance.startRecovery(newOwners, { from: owner });
+        await ctx.multisig.startRecovery(newOwners, { from: owner });
 
         assert.equal(
-          await ctx.instance.recoveryHash(),
+          await ctx.multisig.recoveryHash(),
           hashAddresses(newOwners)
         );
       });
 
       it('should set recoveryBlock to current block', async () => {
-        await ctx.instance.startRecovery(newOwners, { from: owner });
+        await ctx.multisig.startRecovery(newOwners, { from: owner });
 
         assertNumberEqual(
-          await ctx.instance.recoveryBlock(),
+          await ctx.multisig.recoveryBlock(),
           web3.eth.blockNumber
         );
       });
 
       it('should emit RecoveryStarted event', async () => {
-        const trans = await ctx.instance.startRecovery(newOwners, {
+        const trans = await ctx.multisig.startRecovery(newOwners, {
           from: owner
         });
 
@@ -142,7 +142,7 @@ export function testCancelRecovery(
 
   // preconditions
   beforeEach(async () => {
-    assert.deepEqual(ctx.owners, await ctx.instance.listOwners());
+    assert.deepEqual(ctx.owners, await ctx.multisig.listOwners());
     assert.notInclude(ctx.owners, nonOwner);
     assert.notDeepEqual(newOwners, ctx.owners);
   });
@@ -150,20 +150,20 @@ export function testCancelRecovery(
   context('When recovery not started', () => {
     it('should throw invalid opcode', async () => {
       await assertThrowsInvalidOpcode(async () => {
-        await ctx.instance.cancelRecovery({ from: ctx.owners[0] });
+        await ctx.multisig.cancelRecovery({ from: ctx.owners[0] });
       });
     });
   });
 
   context('When recovery started', () => {
     beforeEach(async () => {
-      await ctx.instance.startRecovery(newOwners, { from: ctx.owners[0] });
+      await ctx.multisig.startRecovery(newOwners, { from: ctx.owners[0] });
     });
 
     context(`When called by non-owner`, () => {
       it('should throw invalid opcode', async () => {
         await assertThrowsInvalidOpcode(async () => {
-          await ctx.instance.cancelRecovery({ from: nonOwner });
+          await ctx.multisig.cancelRecovery({ from: nonOwner });
         });
       });
     });
@@ -171,22 +171,22 @@ export function testCancelRecovery(
     ctx.owners.map((owner, index) => {
       context(`When called by #${index + 1} owner`, () => {
         it('should reset recoveryHash', async () => {
-          await ctx.instance.cancelRecovery({ from: owner });
+          await ctx.multisig.cancelRecovery({ from: owner });
 
           assert.equal(
-            await ctx.instance.recoveryHash(),
+            await ctx.multisig.recoveryHash(),
             `0x${'0'.repeat(64)}`
           );
         });
 
         it('should reset recoveryBlock', async () => {
-          await ctx.instance.cancelRecovery({ from: owner });
+          await ctx.multisig.cancelRecovery({ from: owner });
 
-          assertNumberEqual(await ctx.instance.recoveryBlock(), 0);
+          assertNumberEqual(await ctx.multisig.recoveryBlock(), 0);
         });
 
         it('should emit RecoveryCancelled event', async () => {
-          const trans = await ctx.instance.cancelRecovery({
+          const trans = await ctx.multisig.cancelRecovery({
             from: owner
           });
 
@@ -208,7 +208,7 @@ export function testConfirmRecovery(
 
   // preconditions
   beforeEach(async () => {
-    assert.deepEqual(ctx.owners, await ctx.instance.listOwners());
+    assert.deepEqual(ctx.owners, await ctx.multisig.listOwners());
     assert.notInclude(ctx.owners, nonOwner);
     assert.notDeepEqual(newOwners, ctx.owners);
   });
@@ -216,7 +216,7 @@ export function testConfirmRecovery(
   context('When recovery not started', () => {
     it('should throw invalid opcode', async () => {
       await assertThrowsInvalidOpcode(async () => {
-        await ctx.instance.cancelRecovery({ from: ctx.owners[0] });
+        await ctx.multisig.cancelRecovery({ from: ctx.owners[0] });
       });
     });
   });
@@ -227,17 +227,17 @@ export function testConfirmRecovery(
     let recoveryPassBlock: BigNumber;
 
     beforeEach(async () => {
-      await ctx.instance.startRecovery(newOwners, { from: ctx.owners[0] });
+      await ctx.multisig.startRecovery(newOwners, { from: ctx.owners[0] });
 
-      recoveryPassBlock = (await ctx.instance.recoveryBlock()).add(
-        await ctx.instance.recoveryConfirmations()
+      recoveryPassBlock = (await ctx.multisig.recoveryBlock()).add(
+        await ctx.multisig.recoveryConfirmations()
       );
     });
 
     context('When recovery just started', () => {
       it('should throw invalid opcode', async () => {
         await assertThrowsInvalidOpcode(async () => {
-          await ctx.instance.confirmRecovery(newOwners, {
+          await ctx.multisig.confirmRecovery(newOwners, {
             from: ctx.owners[0]
           });
         });
@@ -249,7 +249,7 @@ export function testConfirmRecovery(
         await waitUntilBlock(100, recoveryPassBlock.div(2).toNumber());
 
         await assertThrowsInvalidOpcode(async () => {
-          await ctx.instance.confirmRecovery(newOwners, {
+          await ctx.multisig.confirmRecovery(newOwners, {
             from: ctx.owners[0]
           });
         });
@@ -264,7 +264,7 @@ export function testConfirmRecovery(
       context(`When called by non-owner`, () => {
         it('should throw invalid opcode', async () => {
           await assertThrowsInvalidOpcode(async () => {
-            await ctx.instance.confirmRecovery(newOwners, { from: nonOwner });
+            await ctx.multisig.confirmRecovery(newOwners, { from: nonOwner });
           });
         });
       });
@@ -272,28 +272,28 @@ export function testConfirmRecovery(
       ctx.owners.map((owner, index) => {
         context(`When called by #${index + 1} owner`, () => {
           it('should change owners', async () => {
-            await ctx.instance.confirmRecovery(newOwners, { from: owner });
+            await ctx.multisig.confirmRecovery(newOwners, { from: owner });
 
-            assert.deepEqual(await ctx.instance.listOwners(), newOwners);
+            assert.deepEqual(await ctx.multisig.listOwners(), newOwners);
           });
 
           it('should reset recoveryHash', async () => {
-            await ctx.instance.confirmRecovery(newOwners, { from: owner });
+            await ctx.multisig.confirmRecovery(newOwners, { from: owner });
 
             assert.equal(
-              await ctx.instance.recoveryHash(),
+              await ctx.multisig.recoveryHash(),
               `0x${'0'.repeat(64)}`
             );
           });
 
           it('should reset recoveryBlock', async () => {
-            await ctx.instance.confirmRecovery(newOwners, { from: owner });
+            await ctx.multisig.confirmRecovery(newOwners, { from: owner });
 
-            assertNumberEqual(await ctx.instance.recoveryBlock(), 0);
+            assertNumberEqual(await ctx.multisig.recoveryBlock(), 0);
           });
 
           it('should emit RecoveryConfirmed event', async () => {
-            const trans = await ctx.instance.confirmRecovery(newOwners, {
+            const trans = await ctx.multisig.confirmRecovery(newOwners, {
               from: owner
             });
 

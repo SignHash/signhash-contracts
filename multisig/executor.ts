@@ -11,11 +11,11 @@ import { Method, TransactionResult } from 'truffle';
 
 import * as Web3 from 'web3';
 
-export class ExecuteCommand {
+export class MultiSigExecutor {
   private readonly transaction: MultiSigTransaction;
 
-  constructor(private web3: Web3, private instance: MultiSig) {
-    this.transaction = new MultiSigTransaction(web3, instance.address);
+  constructor(private web3: Web3, private multisig: MultiSig) {
+    this.transaction = new MultiSigTransaction(web3, multisig.address);
   }
 
   public sign(
@@ -39,7 +39,7 @@ export class ExecuteCommand {
     data: string
   ): Promise<TransactionResult> {
     const { v, r, s } = groupSignatures(signatures);
-    return this.instance.execute(v, r, s, destination, value, data);
+    return this.multisig.execute(v, r, s, destination, value, data);
   }
 }
 

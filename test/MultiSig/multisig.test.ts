@@ -13,8 +13,8 @@ import { ContractContextDefinition, TransactionResult } from 'truffle';
 import { AnyNumber } from 'web3';
 
 import {
-  ExecuteCommand,
   getData,
+  MultiSigExecutor,
   Signature,
   TransferCommand,
   TransferERC20Command
@@ -53,12 +53,12 @@ contract('MultiSig', accounts => {
       const ctx = new MultiSigTestContext<MultiSig>(accounts, owners);
 
       beforeEach(async () => {
-        ctx.instance = await MultiSigContract.new(owners);
+        ctx.multisig = await MultiSigContract.new(owners);
       });
 
       describe('#ctor', () => {
         it('should set owners', async () => {
-          assert.deepEqual(await ctx.instance.listOwners(), owners);
+          assert.deepEqual(await ctx.multisig.listOwners(), owners);
         });
       });
 
@@ -73,7 +73,7 @@ export function testFallback(ctx: MultiSigTestContext<MultiSig>) {
 
   it('should not consume more than 23000 gas', async () => {
     const result = await deposit(
-      ctx.instance,
+      ctx.multisig,
       utils.toEther(0.1),
       defaultAccount
     );
@@ -83,14 +83,14 @@ export function testFallback(ctx: MultiSigTestContext<MultiSig>) {
 
   it('should increase balance', async () => {
     const value = utils.toEther(1);
-    await deposit(ctx.instance, value, defaultAccount);
+    await deposit(ctx.multisig, value, defaultAccount);
 
-    assertEtherEqual(value, await utils.getBalance(ctx.instance.address));
+    assertEtherEqual(value, await utils.getBalance(ctx.multisig.address));
   });
 
   it('should emit Deposited event when sent value', async () => {
     const value = utils.toEther(1);
-    const tx = await deposit(ctx.instance, value, defaultAccount);
+    const tx = await deposit(ctx.multisig, value, defaultAccount);
 
     const log = findLastLog(tx, 'Deposited');
     assert.isOk(log);
@@ -102,7 +102,7 @@ export function testFallback(ctx: MultiSigTestContext<MultiSig>) {
   });
 
   it('should not emit Deposited event when not sent value', async () => {
-    const tx = await deposit(ctx.instance, 0, defaultAccount);
+    const tx = await deposit(ctx.multisig, 0, defaultAccount);
 
     const log = findLastLog(tx, 'Deposited');
     assert.isNotOk(log);
@@ -115,10 +115,10 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
   let dummyCommand: DummyCommand;
 
   class DummyCommand {
-    private readonly execution: ExecuteCommand;
+    private readonly execution: MultiSigExecutor;
 
     constructor() {
-      this.execution = new ExecuteCommand(web3, ctx.instance);
+      this.execution = new MultiSigExecutor(web3, ctx.multisig);
     }
 
     public sign(signer: Address, nonce: Web3.AnyNumber): Signature {
@@ -149,13 +149,13 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
   }
 
   beforeEach(async () => {
-    await deposit(ctx.instance, utils.toEther(1), defaultAccount);
+    await deposit(ctx.multisig, utils.toEther(1), defaultAccount);
 
     dummyCommand = new DummyCommand();
   });
 
   it('should emit Executed event', async () => {
-    const nonce = await ctx.instance.nonce();
+    const nonce = await ctx.multisig.nonce();
     const signatures = await Promise.all(
       ctx.owners.map(owner => dummyCommand.sign(owner, nonce))
     );
@@ -173,7 +173,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
   if (ctx.owners.length > 1) {
     ctx.owners.map(async (owner, index) =>
       it(`should throw when signed only by #${index + 1}`, async () => {
-        const nonce = await ctx.instance.nonce();
+        const nonce = await ctx.multisig.nonce();
         const signature = await dummyCommand.sign(owner, nonce);
 
         await assertThrowsInvalidOpcode(async () => {
@@ -187,7 +187,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
     const strangers = ctx.accounts.slice(4, 4 + ctx.owners.length);
     assert.notDeepEqual(strangers, ctx.owners);
 
-    const nonce = await ctx.instance.nonce();
+    const nonce = await ctx.multisig.nonce();
     const signatures = await Promise.all(
       strangers.map(owner => dummyCommand.sign(owner, nonce))
     );
@@ -200,7 +200,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
   if (ctx.owners.length > 1) {
     it('should throw when signed by owners in wrong order', async () => {
       const reversed = ctx.owners.reverse();
-      const nonce = await ctx.instance.nonce();
+      const nonce = await ctx.multisig.nonce();
       const signatures = await Promise.all(
         reversed.map(owner => dummyCommand.sign(owner, nonce))
       );
@@ -212,7 +212,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
   }
 
   it('should throw on replay attack', async () => {
-    const nonce = await ctx.instance.nonce();
+    const nonce = await ctx.multisig.nonce();
     const signatures = await Promise.all(
       ctx.owners.map(owner => dummyCommand.sign(owner, nonce))
     );
@@ -228,7 +228,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
     let transferCommand: TransferCommand;
 
     async function transfer(account: Address, value: AnyNumber) {
-      const nonce = await ctx.instance.nonce();
+      const nonce = await ctx.multisig.nonce();
       const signatures = ctx.owners.map(owner =>
         transferCommand.sign(owner, nonce, account, value)
       );
@@ -237,9 +237,9 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
     }
 
     beforeEach(async () => {
-      await deposit(ctx.instance, utils.toEther(1), defaultAccount);
+      await deposit(ctx.multisig, utils.toEther(1), defaultAccount);
 
-      transferCommand = new TransferCommand(web3, ctx.instance);
+      transferCommand = new TransferCommand(web3, ctx.multisig);
     });
 
     it('should transfer Ether to account', async () => {
@@ -254,7 +254,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
 
     it('should emit Executed event', async () => {
       const value = utils.toEther(0.1);
-      const nonce = await ctx.instance.nonce();
+      const nonce = await ctx.multisig.nonce();
 
       const tx = await transfer(defaultAccount, value);
       assertExecutedEvent(tx, defaultAccount, nonce, value, '0x');
@@ -278,7 +278,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
       const destinations = ctx.accounts.slice(5, 9);
 
       // sign all transfers
-      const nonce = await ctx.instance.nonce();
+      const nonce = await ctx.multisig.nonce();
       const specifications = await Promise.all(
         destinations.map(async (account, index) => ({
           destination: {
@@ -304,7 +304,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
     });
 
     it('should throw on nonce reuse', async () => {
-      const nonce = await ctx.instance.nonce();
+      const nonce = await ctx.multisig.nonce();
       const value = utils.toEther(0.1);
       const tx2Destination = defaultAccount;
       const tx2Value = utils.toEther(0.2);
@@ -335,7 +335,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
     let transferERC20Command: TransferERC20Command;
 
     async function transferERC20(account: Address, amount: AnyNumber) {
-      const nonce = await ctx.instance.nonce();
+      const nonce = await ctx.multisig.nonce();
 
       const signatures = await Promise.all(
         ctx.owners.map(owner =>
@@ -348,10 +348,10 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
 
     beforeEach(async () => {
       token = await TestERC20TokenContract.new();
-      await token.transfer(ctx.instance.address, utils.toEther(100));
+      await token.transfer(ctx.multisig.address, utils.toEther(100));
       transferERC20Command = new TransferERC20Command(
         web3,
-        ctx.instance,
+        ctx.multisig,
         token
       );
     });
@@ -368,7 +368,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
 
     it('should emit Executed event', async () => {
       const amount = utils.toEther(10);
-      const nonce = await ctx.instance.nonce();
+      const nonce = await ctx.multisig.nonce();
 
       const tx = await transferERC20(defaultAccount, amount);
       const expectedData = await getData(
@@ -398,7 +398,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
       const destinations = ctx.accounts.slice(5, 9);
 
       // sign all token transfers
-      const nonce = await ctx.instance.nonce();
+      const nonce = await ctx.multisig.nonce();
       const specifications = await Promise.all(
         destinations.map(async (account, index) => ({
           destination: {
@@ -435,7 +435,7 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
     });
 
     it('should throw on nonce reuse', async () => {
-      const nonce = await ctx.instance.nonce();
+      const nonce = await ctx.multisig.nonce();
       const amount = utils.toEther(1);
       const tx2Destination = ctx.accounts[6];
       const tx2Amount = utils.toEther(2);
@@ -470,10 +470,10 @@ export function testExecute(ctx: MultiSigTestContext<MultiSig>) {
   });
 }
 
-async function deposit(instance: MultiSig, value: AnyNumber, from: Address) {
-  return await instance.sendTransaction({
+async function deposit(multisig: MultiSig, value: AnyNumber, from: Address) {
+  return await multisig.sendTransaction({
     from,
-    to: instance.address,
+    to: multisig.address,
     value
   });
 }
