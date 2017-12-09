@@ -13,6 +13,7 @@ contract MultiSig {
         owners = _owners;
     }
 
+    event Deposited(address indexed from, uint256 value);
     event Executed(address indexed destination, uint256 nonce, uint256 value, bytes data);
 
     modifier onlySigned(uint8[] v, bytes32[] r, bytes32[] s, bytes32 hash) {
@@ -37,9 +38,11 @@ contract MultiSig {
         _;
     }
 
-    /* solhint-disable no-empty-blocks */
-    function() public payable {}
-    /* solhint-disable no-empty-blocks */
+    function() public payable {
+        if (msg.value > 0) {
+            Deposited(msg.sender, msg.value);
+        }
+    }
 
     function listOwners() public view returns (address[]) {
         return owners;

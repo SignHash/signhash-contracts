@@ -88,6 +88,11 @@ declare module 'signhash' {
       ): Promise<TransactionResult>;
     }
 
+    interface DepositedEvent {
+      from: Address;
+      value: BigNumber;
+    }
+
     interface ExecutedEvent {
       destination: Address;
       nonce: BigNumber;

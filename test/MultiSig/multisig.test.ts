@@ -2,7 +2,13 @@ import { assert } from 'chai';
 
 import * as Web3 from 'web3';
 
-import { ERC20, ExecutedEvent, MultiSig, SignHashArtifacts } from 'signhash';
+import {
+  DepositedEvent,
+  ERC20,
+  ExecutedEvent,
+  MultiSig,
+  SignHashArtifacts
+} from 'signhash';
 import { ContractContextDefinition, TransactionResult } from 'truffle';
 import { AnyNumber } from 'web3';
 
@@ -80,6 +86,26 @@ export function testFallback(ctx: MultiSigTestContext<MultiSig>) {
     await deposit(ctx.instance, value, defaultAccount);
 
     assertEtherEqual(value, await utils.getBalance(ctx.instance.address));
+  });
+
+  it('should emit Deposited event when sent value', async () => {
+    const value = utils.toEther(1);
+    const tx = await deposit(ctx.instance, value, defaultAccount);
+
+    const log = findLastLog(tx, 'Deposited');
+    assert.isOk(log);
+
+    const event = log.args as DepositedEvent;
+    assert.isOk(event);
+    assert.equal(event.from, defaultAccount);
+    assertEtherEqual(event.value, value);
+  });
+
+  it('should not emit Deposited event when not sent value', async () => {
+    const tx = await deposit(ctx.instance, 0, defaultAccount);
+
+    const log = findLastLog(tx, 'Deposited');
+    assert.isNotOk(log);
   });
 }
 
