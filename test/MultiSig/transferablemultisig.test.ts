@@ -19,7 +19,7 @@ const TransferableMultiSigContract = artifacts.require(
 );
 
 contract('TransferableMultiSigContract', accounts => {
-  describe.skip('#ctor', () => {
+  describe('#ctor', () => {
     it('should not allow empty list of owners', async () => {
       await assertThrowsInvalidOpcode(async () => {
         await TransferableMultiSigContract.new([]);
@@ -29,7 +29,7 @@ contract('TransferableMultiSigContract', accounts => {
 
   const ownerSets = [[accounts[2]], accounts.slice(1, 3), accounts.slice(2, 6)];
   ownerSets.map(owners => {
-    context.skip(`When wallet has ${owners.length} owners`, () => {
+    context(`When wallet has ${owners.length} owners`, () => {
       const ctx = new MultiSigTestContext<TransferableMultiSig>(
         accounts,
         owners
