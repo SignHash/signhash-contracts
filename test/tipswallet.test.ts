@@ -1,5 +1,3 @@
-import { assert } from 'chai';
-
 import * as Web3 from 'web3';
 
 import { SignHashArtifacts, TipsWallet } from 'signhash';
@@ -7,7 +5,11 @@ import { ContractContextDefinition } from 'truffle';
 
 import { assertThrowsInvalidOpcode } from './helpers';
 import { MultiSigTestContext } from './MultiSig/context';
-import { testExecute, testFallback } from './MultiSig/multisig.test';
+import {
+  testExecute,
+  testFallback,
+  testListOwners
+} from './MultiSig/multisig.test';
 import {
   testCancelRecovery,
   testConfirmRecovery,
@@ -45,12 +47,7 @@ contract('TipsWallet', accounts => {
         );
       });
 
-      describe('#ctor', () => {
-        it('should set owners', async () => {
-          assert.deepEqual(await ctx.multisig.listOwners(), owners);
-        });
-      });
-
+      describe('#listOwners', () => testListOwners(ctx));
       describe('#fallback', () => testFallback(ctx));
       describe('#execute', () => testExecute(ctx));
       describe('#transferOwnership', () => testTransferOwnership(ctx));

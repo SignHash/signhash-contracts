@@ -39,12 +39,6 @@ contract('TransferableMultiSigContract', accounts => {
         ctx.multisig = await TransferableMultiSigContract.new(owners);
       });
 
-      describe('#ctor', () => {
-        it('should set owners', async () => {
-          assert.deepEqual(await ctx.multisig.listOwners(), owners);
-        });
-      });
-
       describe('#transferOwnership', () => testTransferOwnership(ctx));
     });
   });

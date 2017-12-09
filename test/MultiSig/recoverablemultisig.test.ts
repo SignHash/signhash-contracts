@@ -55,12 +55,6 @@ contract('RecoverableMultiSigContract', accounts => {
         );
       });
 
-      describe('#ctor', () => {
-        it('should set owners', async () => {
-          assert.deepEqual(await ctx.multisig.listOwners(), owners);
-        });
-      });
-
       describe('#startRecovery', () => testStartRecovery(ctx));
       describe('#cancelRecovery', () => testCancelRecovery(ctx));
       describe('#confirmRecovery', () => testConfirmRecovery(ctx));

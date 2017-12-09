@@ -56,17 +56,18 @@ contract('MultiSig', accounts => {
         ctx.multisig = await MultiSigContract.new(owners);
       });
 
-      describe('#ctor', () => {
-        it('should set owners', async () => {
-          assert.deepEqual(await ctx.multisig.listOwners(), owners);
-        });
-      });
-
+      describe('#listOwners', () => testListOwners(ctx));
       describe('#fallback', () => testFallback(ctx));
       describe('#execute', () => testExecute(ctx));
     });
   });
 });
+
+export function testListOwners(ctx: MultiSigTestContext<MultiSig>) {
+  it('should list owners', async () => {
+    assert.deepEqual(await ctx.multisig.listOwners(), ctx.owners);
+  });
+}
 
 export function testFallback(ctx: MultiSigTestContext<MultiSig>) {
   const defaultAccount = ctx.accounts[9];
