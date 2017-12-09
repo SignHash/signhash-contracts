@@ -5,15 +5,15 @@ import "./MultiSig.sol";
 
 contract RecoverableMultiSig is MultiSig {
 
-    uint256 public recoveryConfirmations;
+    uint256 public recoveryBlockOffset;
     uint256 public recoveryBlock;
     bytes32 public recoveryHash;
 
-    function RecoverableMultiSig(address[] _owners, uint256 _recoveryConfirmations)
+    function RecoverableMultiSig(address[] _owners, uint256 _recoveryBlockOffset)
         public
         MultiSig(_owners)
     {
-        recoveryConfirmations = _recoveryConfirmations;
+        recoveryBlockOffset = _recoveryBlockOffset;
     }
 
     event RecoveryStarted(address indexed from, address[] newOwners);
@@ -32,7 +32,7 @@ contract RecoverableMultiSig is MultiSig {
 
     modifier onlyRecoveryPassed() {
         require(recoveryBlock > 0);
-        require(block.number >= recoveryBlock + recoveryConfirmations);
+        require(block.number >= recoveryBlock + recoveryBlockOffset);
         _;
     }
 

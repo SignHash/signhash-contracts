@@ -111,7 +111,7 @@ declare module 'signhash' {
     }
 
     interface RecoverableMultiSig extends MultiSig {
-      recoveryConfirmations(): Promise<BigNumber>;
+      recoveryBlockOffset(): Promise<BigNumber>;
       recoveryBlock(): Promise<BigNumber>;
       recoveryHash(): Promise<string>;
 
@@ -159,7 +159,7 @@ declare module 'signhash' {
     interface TipsWalletContract extends Contract<TipsWallet> {
       'new'(
         owners: Address[],
-        recoveryConfirmations: AnyNumber,
+        recoveryBlockOffset: AnyNumber,
         options?: TransactionOptions
       ): Promise<TipsWallet>;
     }
@@ -177,7 +177,7 @@ declare module 'signhash' {
       deploy(
         contract: TipsWalletContract,
         owners: Address[],
-        recoveryConfirmations: AnyNumber
+        recoveryBlockOffset: AnyNumber
       ): Promise<void>;
     }
 

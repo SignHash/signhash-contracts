@@ -38,10 +38,10 @@ contract('TipsWallet', accounts => {
       const ctx = new MultiSigTestContext<TipsWallet>(accounts, owners);
 
       beforeEach(async () => {
-        const recoveryConfirmations = 100;
+        const recoveryBlockOffset = 100;
         ctx.multisig = await TipsWalletContract.new(
           owners,
-          recoveryConfirmations
+          recoveryBlockOffset
         );
       });
 

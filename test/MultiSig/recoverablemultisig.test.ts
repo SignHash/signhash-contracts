@@ -48,10 +48,10 @@ contract('RecoverableMultiSigContract', accounts => {
       );
 
       beforeEach(async () => {
-        const recoveryConfirmations = 100;
+        const recoveryBlockOffset = 100;
         ctx.multisig = await RecoverableMultiSigContract.new(
           owners,
-          recoveryConfirmations
+          recoveryBlockOffset
         );
       });
 
@@ -224,13 +224,13 @@ export function testConfirmRecovery(
   context('When recovery started', () => {
     const waitUntilBlock = tempo(web3).waitUntilBlock;
 
-    let recoveryPassBlock: BigNumber;
+    let recoveryPassingBlock: BigNumber;
 
     beforeEach(async () => {
       await ctx.multisig.startRecovery(newOwners, { from: ctx.owners[0] });
 
-      recoveryPassBlock = (await ctx.multisig.recoveryBlock()).add(
-        await ctx.multisig.recoveryConfirmations()
+      recoveryPassingBlock = (await ctx.multisig.recoveryBlock()).add(
+        await ctx.multisig.recoveryBlockOffset()
       );
     });
 
@@ -246,7 +246,7 @@ export function testConfirmRecovery(
 
     context('When recovery not passed', () => {
       it('should throw invalid opcode', async () => {
-        await waitUntilBlock(100, recoveryPassBlock.div(2).toNumber());
+        await waitUntilBlock(100, recoveryPassingBlock.div(2).toNumber());
 
         await assertThrowsInvalidOpcode(async () => {
           await ctx.multisig.confirmRecovery(newOwners, {
@@ -258,7 +258,7 @@ export function testConfirmRecovery(
 
     context('When recovery passed', () => {
       beforeEach(async () => {
-        await waitUntilBlock(100, recoveryPassBlock.toNumber());
+        await waitUntilBlock(100, recoveryPassingBlock.toNumber());
       });
 
       context(`When called by non-owner`, () => {

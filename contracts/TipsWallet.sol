@@ -7,11 +7,11 @@ import "./MultiSig/RecoverableMultiSig.sol";
 
 contract TipsWallet is MultiSig, TransferableMultiSig, RecoverableMultiSig {
     /* solhint-disable no-empty-blocks */
-    function TipsWallet(address[] _owners, uint256 _recoveryConfirmations)
+    function TipsWallet(address[] _owners, uint256 _recoveryBlockOffset)
         public
         MultiSig(_owners)
         TransferableMultiSig(_owners)
-        RecoverableMultiSig(_owners, _recoveryConfirmations)
+        RecoverableMultiSig(_owners, _recoveryBlockOffset)
     {
     }
     /* solhint-enable no-empty-blocks */
