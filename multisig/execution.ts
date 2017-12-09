@@ -1,10 +1,10 @@
 import {
   groupSignatures,
-  MultiSigCommand,
+  MultiSigTransaction,
   Signature,
   stripHex,
   toHex
-} from './command';
+} from './transaction';
 
 import { MultiSig } from 'signhash';
 import { Method, TransactionResult } from 'truffle';
@@ -12,10 +12,10 @@ import { Method, TransactionResult } from 'truffle';
 import * as Web3 from 'web3';
 
 export class ExecuteCommand {
-  private readonly transaction: MultiSigCommand;
+  private readonly transaction: MultiSigTransaction;
 
   constructor(private web3: Web3, private instance: MultiSig) {
-    this.transaction = new MultiSigCommand(web3, instance.address);
+    this.transaction = new MultiSigTransaction(web3, instance.address);
   }
 
   public sign(

@@ -1,5 +1,5 @@
-import { Signature } from './command';
 import { ExecuteCommand, getData } from './execution';
+import { Signature } from './transaction';
 
 import { ERC20, MultiSig } from 'signhash';
 import { TransactionResult } from 'truffle';

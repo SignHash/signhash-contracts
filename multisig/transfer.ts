@@ -1,5 +1,5 @@
-import { Signature } from './command';
 import { ExecuteCommand } from './execution';
+import { Signature } from './transaction';
 
 import { MultiSig } from 'signhash';
 import { TransactionResult } from 'truffle';

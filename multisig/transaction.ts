@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 
 import * as Web3 from 'web3';
 
-export class MultiSigCommand {
+export class MultiSigTransaction {
   private readonly prefix = 0x19;
   private readonly version = 0x0;
 

@@ -1,4 +1,9 @@
-import { groupSignatures, MultiSigCommand, Signature, toHex } from './command';
+import {
+  groupSignatures,
+  MultiSigTransaction,
+  Signature,
+  toHex
+} from './transaction';
 
 import { TransferableMultiSig } from 'signhash';
 import { TransactionResult } from 'truffle';
@@ -6,10 +11,10 @@ import { TransactionResult } from 'truffle';
 import * as Web3 from 'web3';
 
 export class TransferOwnershipCommand {
-  private readonly transaction: MultiSigCommand;
+  private readonly transaction: MultiSigTransaction;
 
   constructor(private web3: Web3, private instance: TransferableMultiSig) {
-    this.transaction = new MultiSigCommand(web3, instance.address);
+    this.transaction = new MultiSigTransaction(web3, instance.address);
   }
 
   public sign(
