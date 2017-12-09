@@ -1,9 +1,9 @@
 pragma solidity 0.4.18;
 
-import "./TransferableMultiSig.sol";
+import "./MultiSig.sol";
 
 
-contract RecoverableMultiSig is TransferableMultiSig {
+contract RecoverableMultiSig is MultiSig {
 
     uint256 public recoveryConfirmations;
     uint256 public recoveryBlock;
@@ -11,7 +11,7 @@ contract RecoverableMultiSig is TransferableMultiSig {
 
     function RecoverableMultiSig(address[] _owners, uint256 _recoveryConfirmations)
         public
-        TransferableMultiSig(_owners)
+        MultiSig(_owners)
     {
         recoveryConfirmations = _recoveryConfirmations;
     }

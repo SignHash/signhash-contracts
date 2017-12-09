@@ -795,7 +795,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 1480,
+                          "referencedDeclaration": 1492,
                           "type": "function () pure returns (bytes32)",
                           "value": "keccak256"
                         },
@@ -921,7 +921,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 1503,
+                          "referencedDeclaration": 1517,
                           "type": "contract TransferableMultiSig",
                           "value": "this"
                         },
@@ -1124,5 +1124,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-09T20:36:12.563Z"
+  "updatedAt": "2017-12-09T21:56:17.709Z"
 }

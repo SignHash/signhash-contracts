@@ -110,7 +110,7 @@ declare module 'signhash' {
       ): Promise<TransactionResult>;
     }
 
-    interface RecoverableMultiSig extends TransferableMultiSig {
+    interface RecoverableMultiSig extends MultiSig {
       recoveryConfirmations(): Promise<BigNumber>;
       recoveryBlock(): Promise<BigNumber>;
       recoveryHash(): Promise<string>;
@@ -142,7 +142,7 @@ declare module 'signhash' {
       newOwners: Address[];
     }
 
-    type TipsWallet = RecoverableMultiSig;
+    interface TipsWallet extends TransferableMultiSig, RecoverableMultiSig {}
 
     interface MigrationsContract extends Contract<Migrations> {
       'new'(options?: TransactionOptions): Promise<Migrations>;
