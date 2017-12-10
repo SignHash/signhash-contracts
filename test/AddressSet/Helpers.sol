@@ -2,7 +2,7 @@ pragma solidity 0.4.18;
 
 import "truffle/Assert.sol";
 
-import "../contracts/AddressSet.sol";
+import "../../contracts/AddressSet.sol";
 
 
 library Helpers {

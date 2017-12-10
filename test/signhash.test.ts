@@ -1,6 +1,21 @@
 import { assert } from 'chai';
 
+import * as Web3 from 'web3';
+
+import {
+  ProofAddedEvent,
+  ProofRemovedEvent,
+  RevokedEvent,
+  SignedEvent,
+  SignHash,
+  SignHashArtifacts
+} from 'signhash';
+import { ContractContextDefinition } from 'truffle';
 import { assertThrowsInvalidOpcode, findLastLog } from './helpers';
+
+declare const web3: Web3;
+declare const artifacts: SignHashArtifacts;
+declare const contract: ContractContextDefinition;
 
 const SignHashContract = artifacts.require('./SignHash.sol');
 
@@ -11,51 +26,51 @@ contract('SignHash', accounts => {
   const maxCount = accounts.length;
   const hash = web3.sha3('test');
 
-  let instance: SignHash;
+  let signHash: SignHash;
 
   async function signByMany(hashArg: string, signers: Address[]) {
     for (const signer of signers) {
-      await instance.sign(hashArg, { from: signer });
+      await signHash.sign(hashArg, { from: signer });
     }
   }
 
   beforeEach(async () => {
-    instance = await SignHashContract.new({ from: deployerAccount });
+    signHash = await SignHashContract.new({ from: deployerAccount });
   });
 
   describe('#ctor', () => {
     it('should start with empty list of signers', async () => {
-      const signers = await instance.getSigners(hash, maxCount);
+      const signers = await signHash.getSigners(hash, maxCount);
       assert.deepEqual(signers, []);
     });
   });
 
   describe('#sign', () => {
     it('should add signer', async () => {
-      await instance.sign(hash);
+      await signHash.sign(hash);
 
-      const signers = await instance.getSigners(hash, maxCount);
+      const signers = await signHash.getSigners(hash, maxCount);
       assert.deepEqual(signers, [defaultAccount]);
     });
 
     it('should add multiple signers', async () => {
       await signByMany(hash, accounts);
-      const signers = await instance.getSigners(hash, maxCount);
+      const signers = await signHash.getSigners(hash, maxCount);
       assert.deepEqual(signers, accounts);
     });
 
     it('should add signer only once', async () => {
-      await instance.sign(hash);
-      await instance.sign(hash);
+      await signHash.sign(hash);
+      await signHash.sign(hash);
 
-      const signers = await instance.getSigners(hash, maxCount);
+      const signers = await signHash.getSigners(hash, maxCount);
       assert.deepEqual(signers, [defaultAccount]);
     });
 
     it('should emit Signed event', async () => {
-      const trans = await instance.sign(hash);
+      const trans = await signHash.sign(hash);
       const log = findLastLog(trans, 'Signed');
-      const event: Signed = log.args;
+      const event: SignedEvent = log.args;
 
       assert.equal(event.hash, hash);
       assert.equal(event.signer, defaultAccount);
@@ -63,24 +78,24 @@ contract('SignHash', accounts => {
 
     it('should throw when hash is empty', async () => {
       await assertThrowsInvalidOpcode(async () => {
-        await instance.sign('');
+        await signHash.sign('');
       });
     });
   });
 
   describe('#revoke', () => {
     it('should remove the only signer', async () => {
-      await instance.revoke(hash);
+      await signHash.revoke(hash);
 
-      const signers = await instance.getSigners(hash, maxCount);
+      const signers = await signHash.getSigners(hash, maxCount);
       assert.deepEqual(signers, []);
     });
 
     it('should remove one of the signers', async () => {
       await signByMany(hash, accounts);
-      await instance.revoke(hash);
+      await signHash.revoke(hash);
 
-      const signers = await instance.getSigners(hash, maxCount);
+      const signers = await signHash.getSigners(hash, maxCount);
       const expected = accounts.filter(
         (account: Address) => account !== defaultAccount
       );
@@ -89,26 +104,26 @@ contract('SignHash', accounts => {
     });
 
     it('should not throw when hash is not signed', async () => {
-      await instance.revoke(hash);
+      await signHash.revoke(hash);
 
-      const signers = await instance.getSigners(hash, maxCount);
+      const signers = await signHash.getSigners(hash, maxCount);
       assert.deepEqual(signers, []);
     });
 
     it('should not throw when revoking account is not signer', async () => {
-      await instance.sign(hash);
-      await instance.revoke(hash, { from: otherAccount });
+      await signHash.sign(hash);
+      await signHash.revoke(hash, { from: otherAccount });
 
-      const signers = await instance.getSigners(hash, maxCount);
+      const signers = await signHash.getSigners(hash, maxCount);
       assert.deepEqual(signers, [defaultAccount]);
     });
 
     it('should emit Revoked event', async () => {
-      await instance.sign(hash);
-      const trans = await instance.revoke(hash);
+      await signHash.sign(hash);
+      const trans = await signHash.revoke(hash);
 
       const log = findLastLog(trans, 'Revoked');
-      const event: Revoked = log.args;
+      const event: RevokedEvent = log.args;
 
       assert.equal(event.hash, hash);
       assert.equal(event.signer, defaultAccount);
@@ -116,28 +131,28 @@ contract('SignHash', accounts => {
 
     it('should throw when hash is empty', async () => {
       await assertThrowsInvalidOpcode(async () => {
-        await instance.revoke('');
+        await signHash.revoke('');
       });
     });
   });
 
   describe('#getSigners', () => {
     it('should return empty list when there is no signers', async () => {
-      const signers = await instance.getSigners(hash, maxCount);
+      const signers = await signHash.getSigners(hash, maxCount);
       assert.deepEqual(signers, []);
     });
 
     it('should return single element list for a single signer', async () => {
-      await instance.sign(hash);
+      await signHash.sign(hash);
 
-      const signers = await instance.getSigners(hash, maxCount);
+      const signers = await signHash.getSigners(hash, maxCount);
       assert.deepEqual(signers, [defaultAccount]);
     });
 
     it('should return signers in chronological order', async () => {
       await signByMany(hash, accounts);
 
-      const signers = await instance.getSigners(hash, maxCount);
+      const signers = await signHash.getSigners(hash, maxCount);
       assert.deepEqual(signers, accounts);
     });
 
@@ -145,7 +160,7 @@ contract('SignHash', accounts => {
       await signByMany(hash, accounts);
 
       const reducedCount = maxCount - 1;
-      const signers = await instance.getSigners(hash, reducedCount);
+      const signers = await signHash.getSigners(hash, reducedCount);
       assert.deepEqual(signers, accounts.slice(0, reducedCount));
     });
 
@@ -153,7 +168,7 @@ contract('SignHash', accounts => {
       await signByMany(hash, accounts);
 
       const increasedCount = maxCount + 1;
-      const signers = await instance.getSigners(hash, increasedCount);
+      const signers = await signHash.getSigners(hash, increasedCount);
       assert.deepEqual(signers, accounts);
     });
 
@@ -161,7 +176,7 @@ contract('SignHash', accounts => {
       await signByMany(hash, accounts);
 
       const reducedCount = 0;
-      const signers = await instance.getSigners(hash, reducedCount);
+      const signers = await signHash.getSigners(hash, reducedCount);
       assert.deepEqual(signers, []);
     });
   });
@@ -170,9 +185,9 @@ contract('SignHash', accounts => {
     it('should add proof method', async () => {
       const method = 'http';
       const value = 'example.com';
-      await instance.addProof(method, value);
+      await signHash.addProof(method, value);
 
-      const proof = await instance.getProof(defaultAccount, method);
+      const proof = await signHash.getProof(defaultAccount, method);
       assert.equal(proof, value);
     });
 
@@ -193,14 +208,14 @@ contract('SignHash', accounts => {
       ];
 
       await Promise.all(
-        proofs.map(proof => instance.addProof(proof.method, proof.value))
+        proofs.map(proof => signHash.addProof(proof.method, proof.value))
       );
 
       const readProofs = await Promise.all(
         proofs.map(async proof => {
           return {
             method: proof.method,
-            value: await instance.getProof(defaultAccount, proof.method)
+            value: await signHash.getProof(defaultAccount, proof.method)
           };
         })
       );
@@ -212,19 +227,19 @@ contract('SignHash', accounts => {
       const method = 'http';
       const value = 'example.com';
       const newValue = 'another.com';
-      await instance.addProof(method, value);
-      await instance.addProof(method, newValue);
+      await signHash.addProof(method, value);
+      await signHash.addProof(method, newValue);
 
-      const proof = await instance.getProof(defaultAccount, method);
+      const proof = await signHash.getProof(defaultAccount, method);
       assert.equal(proof, newValue);
     });
 
     it('should emit ProofAdded event', async () => {
       const method = 'http';
       const value = 'example.com';
-      const trans = await instance.addProof(method, value);
+      const trans = await signHash.addProof(method, value);
       const log = findLastLog(trans, 'ProofAdded');
-      const event: ProofAdded = log.args;
+      const event: ProofAddedEvent = log.args;
 
       assert.equal(event.signer, defaultAccount);
       assert.equal(event.method, method);
@@ -236,7 +251,7 @@ contract('SignHash', accounts => {
       const value = 'test';
 
       await assertThrowsInvalidOpcode(async () => {
-        await instance.addProof(method, value);
+        await signHash.addProof(method, value);
       });
     });
 
@@ -245,7 +260,7 @@ contract('SignHash', accounts => {
       const value = '';
 
       await assertThrowsInvalidOpcode(async () => {
-        await instance.addProof(method, value);
+        await signHash.addProof(method, value);
       });
     });
   });
@@ -254,20 +269,20 @@ contract('SignHash', accounts => {
     it('should remove proof method', async () => {
       const method = 'http';
       const value = 'example.com';
-      await instance.addProof(method, value);
+      await signHash.addProof(method, value);
 
-      await instance.removeProof(method);
-      const proof = await instance.getProof(defaultAccount, method);
+      await signHash.removeProof(method);
+      const proof = await signHash.getProof(defaultAccount, method);
       assert.equal(proof, '');
     });
 
     it('should emit ProofRemoved event', async () => {
       const method = 'http';
       const value = 'example.com';
-      await instance.addProof(method, value);
-      const trans = await instance.removeProof(method);
+      await signHash.addProof(method, value);
+      const trans = await signHash.removeProof(method);
       const log = findLastLog(trans, 'ProofRemoved');
-      const event: ProofRemoved = log.args;
+      const event: ProofRemovedEvent = log.args;
 
       assert.equal(event.signer, defaultAccount);
       assert.equal(event.method, method);
@@ -276,10 +291,10 @@ contract('SignHash', accounts => {
     it('should throw when called by other user', async () => {
       const method = 'http';
       const value = 'example.com';
-      await instance.addProof(method, value);
+      await signHash.addProof(method, value);
 
       await assertThrowsInvalidOpcode(async () => {
-        await instance.removeProof(method, { from: otherAccount });
+        await signHash.removeProof(method, { from: otherAccount });
       });
     });
 
@@ -287,7 +302,7 @@ contract('SignHash', accounts => {
       const method = '';
 
       await assertThrowsInvalidOpcode(async () => {
-        await instance.removeProof(method);
+        await signHash.removeProof(method);
       });
     });
 
@@ -295,7 +310,7 @@ contract('SignHash', accounts => {
       const method = 'doesNotExist';
 
       await assertThrowsInvalidOpcode(async () => {
-        await instance.removeProof(method);
+        await signHash.removeProof(method);
       });
     });
   });
@@ -304,14 +319,14 @@ contract('SignHash', accounts => {
     it('should return empty string when proof does not exist', async () => {
       const method = 'doesNotExist';
 
-      const proof = await instance.getProof(defaultAccount, method);
+      const proof = await signHash.getProof(defaultAccount, method);
       assert.equal(proof, '');
     });
 
     it('should return empty string when method is empty', async () => {
       const method = '';
 
-      const proof = await instance.getProof(defaultAccount, method);
+      const proof = await signHash.getProof(defaultAccount, method);
       assert.equal(proof, '');
     });
   });

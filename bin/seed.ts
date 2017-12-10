@@ -1,17 +1,36 @@
 #!/usr/bin/env node
 
 import { join } from 'path';
+import { Logger, transports } from 'winston';
 
-import * as Web3 from 'web3';
-import * as Config from 'truffle-config';
+import { promisify } from '../utils';
+
 import * as TestRPC from 'ethereumjs-testrpc';
-import * as Migrate from 'truffle-migrate';
-import * as Resolver from 'truffle-resolver';
+import * as mkdirp from 'mkdirp';
 import * as Artifactor from 'truffle-artifactor';
 import * as Compile from 'truffle-compile';
-import * as mkdirp from 'mkdirp';
+import * as Config from 'truffle-config';
+import * as Migrate from 'truffle-migrate';
+import * as Resolver from 'truffle-resolver';
+import * as Web3 from 'web3';
 
-(async function() {
+const logger = new Logger({
+  colors: {
+    error: 'red',
+    info: 'blue',
+    verbose: 'grey',
+    warn: 'yellow'
+  },
+  transports: [
+    new transports.Console({
+      colorize: true,
+      prettyPrint: true,
+      timestamp: true
+    })
+  ]
+});
+
+(async () => {
   const config = configure();
 
   await compileContracts(config);
@@ -21,7 +40,7 @@ import * as mkdirp from 'mkdirp';
   await setupNetwork(config, deployer);
   await migrate(config);
 })().catch(err => {
-  console.error(err);
+  logger.error(err);
   process.exit(1);
 });
 
@@ -46,7 +65,7 @@ function configure(): Config {
 }
 
 async function compileContracts(config: Config) {
-  logStep(`Compiling contracts: ${config.contracts_directory}`);
+  logger.info(`Compiling contracts: ${config.contracts_directory}`);
 
   const contracts = await promisify<Compile.ContractDefinitions>(cb =>
     Compile.all(config, cb)
@@ -55,29 +74,29 @@ async function compileContracts(config: Config) {
   await promisify<any>(cb => mkdirp(config.contracts_build_directory, cb));
   await config.artifactor.saveAll(contracts);
 
-  console.log(`Saved to: ${config.contracts_build_directory}`);
+  logger.verbose(`Saved to: ${config.contracts_build_directory}`);
 }
 
 async function startTestRPC(port: number): Promise<TestRPC.State> {
-  logStep(`Starting TestRPC on port ${port}`);
+  logger.info(`Starting TestRPC on port ${port}`);
 
   const options = {
-    secure: false,
+    logger: console,
     mnemonic:
       'try exile adapt shed width laugh similar duty neglect kick rug require',
-    logger: console
+    secure: false
   };
 
   const server = TestRPC.server(options);
   const state = await promisify<TestRPC.State>(cb => server.listen(port, cb));
 
-  console.log(`Account mnemonic: ${options.mnemonic}`);
+  logger.verbose(`Account mnemonic: ${options.mnemonic}`);
 
   return state;
 }
 
 async function setupNetwork(config: Config, deployer: Address) {
-  logStep(`Setting up network ${config.network}`);
+  logger.info(`Setting up network ${config.network}`);
 
   const web3 = new Web3(config.provider);
   const networkId = await promisify<string>(cb => web3.version.getNetwork(cb));
@@ -86,33 +105,14 @@ async function setupNetwork(config: Config, deployer: Address) {
   networkConfig.network_id = networkId;
   networkConfig.from = deployer;
 
-  console.log(`Using network: ${config.network} (${networkId})`);
-  console.log(`Using deployer: ${deployer}`);
+  logger.verbose(`Using network: ${config.network} (${networkId})`);
+  logger.verbose(`Using deployer: ${deployer}`);
 }
 
 async function migrate(config: Config) {
-  logStep(`Running migrations: ${config.migrations_directory}`);
+  logger.info(`Running migrations: ${config.migrations_directory}`);
 
   await promisify<void>(cb => Migrate.run(config, cb));
 
-  logStep('Migrations completed');
-}
-
-function promisify<T>(fn: (cb: Callback<T>) => void) {
-  return new Promise<T>((resolve, reject) =>
-    fn((err: Error | null, res: T) => {
-      if (err) {
-        return reject(err);
-      }
-
-      return resolve(res);
-    })
-  );
-}
-
-function logStep(description: string) {
-  console.log();
-  console.log(Array(79).join('-'));
-  console.log(description);
-  console.log(Array(79).join('-'));
+  logger.info('Migrations completed');
 }
