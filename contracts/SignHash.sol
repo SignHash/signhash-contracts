@@ -13,17 +13,24 @@ contract SignHash {
     event Signed(bytes32 indexed hash, address indexed signer);
     event Revoked(bytes32 indexed hash, address indexed signer);
 
-    function sign(bytes32 hash) public {
-        require(hash != bytes32(0));
+    modifier onlyNotZero(bytes32 value) {
+        require(value != bytes32(0));
+        _;
+    }
 
+    function sign(bytes32 hash)
+        public
+        onlyNotZero(hash)
+    {
         signers[hash].add(msg.sender);
 
         Signed(hash, msg.sender);
     }
 
-    function revoke(bytes32 hash) public {
-        require(hash != bytes32(0));
-
+    function revoke(bytes32 hash)
+        public
+        onlyNotZero(hash)
+    {
         signers[hash].remove(msg.sender);
 
         Revoked(hash, msg.sender);
@@ -32,21 +39,8 @@ contract SignHash {
     function list(bytes32 hash, uint256 maxCount)
         public
         view
-        returns (address[] result)
+        returns (address[])
     {
-        AddressSet.Data storage hashSigners = signers[hash];
-        if (hashSigners.count > 0) {
-            if (maxCount < hashSigners.count) {
-                result = new address[](maxCount);
-            } else {
-                result = new address[](hashSigners.count);
-            }
-
-            address current = hashSigners.head;
-            for (uint256 i = 0; i < result.length; i++) {
-                result[i] = current;
-                current = hashSigners.getNext(current);
-            }
-        }
+        return signers[hash].toArray(maxCount);
     }
 }

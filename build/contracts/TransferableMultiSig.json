@@ -197,7 +197,7 @@
       "absolutePath": "/home/js/Projects/js/signhash/signhash-contracts/contracts/MultiSig/TransferableMultiSig.sol",
       "exportedSymbols": {
         "TransferableMultiSig": [
-          889
+          952
         ]
       }
     },
@@ -210,39 +210,39 @@
             ".18"
           ]
         },
-        "id": 823,
+        "id": 886,
         "name": "PragmaDirective",
         "src": "0:23:4"
       },
       {
         "attributes": {
-          "SourceUnit": 607,
+          "SourceUnit": 670,
           "absolutePath": "/home/js/Projects/js/signhash/signhash-contracts/contracts/MultiSig/MultiSig.sol",
           "file": "./MultiSig.sol",
-          "scope": 890,
+          "scope": 953,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 824,
+        "id": 887,
         "name": "ImportDirective",
         "src": "25:24:4"
       },
       {
         "attributes": {
           "contractDependencies": [
-            606
+            669
           ],
           "contractKind": "contract",
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            889,
-            606
+            952,
+            669
           ],
           "name": "TransferableMultiSig",
-          "scope": 890
+          "scope": 953
         },
         "children": [
           {
@@ -256,15 +256,15 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "MultiSig",
-                  "referencedDeclaration": 606,
+                  "referencedDeclaration": 669,
                   "type": "contract MultiSig"
                 },
-                "id": 825,
+                "id": 888,
                 "name": "UserDefinedTypeName",
                 "src": "85:8:4"
               }
             ],
-            "id": 826,
+            "id": 889,
             "name": "InheritanceSpecifier",
             "src": "85:8:4"
           },
@@ -275,7 +275,7 @@
               "isConstructor": true,
               "name": "TransferableMultiSig",
               "payable": false,
-              "scope": 889,
+              "scope": 952,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "public"
@@ -287,7 +287,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_owners",
-                      "scope": 836,
+                      "scope": 899,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address[] memory",
@@ -306,22 +306,22 @@
                               "name": "address",
                               "type": "address"
                             },
-                            "id": 827,
+                            "id": 890,
                             "name": "ElementaryTypeName",
                             "src": "173:7:4"
                           }
                         ],
-                        "id": 828,
+                        "id": 891,
                         "name": "ArrayTypeName",
                         "src": "173:9:4"
                       }
                     ],
-                    "id": 829,
+                    "id": 892,
                     "name": "VariableDeclaration",
                     "src": "173:17:4"
                   }
                 ],
-                "id": 830,
+                "id": 893,
                 "name": "ParameterList",
                 "src": "172:19:4"
               },
@@ -332,7 +332,7 @@
                   ]
                 },
                 "children": [],
-                "id": 834,
+                "id": 897,
                 "name": "ParameterList",
                 "src": "237:0:4"
               },
@@ -344,11 +344,11 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 606,
+                      "referencedDeclaration": 669,
                       "type": "type(contract MultiSig)",
                       "value": "MultiSig"
                     },
-                    "id": 831,
+                    "id": 894,
                     "name": "Identifier",
                     "src": "215:8:4"
                   },
@@ -358,16 +358,16 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 829,
+                      "referencedDeclaration": 892,
                       "type": "address[] memory",
                       "value": "_owners"
                     },
-                    "id": 832,
+                    "id": 895,
                     "name": "Identifier",
                     "src": "224:7:4"
                   }
                 ],
-                "id": 833,
+                "id": 896,
                 "name": "ModifierInvocation",
                 "src": "215:17:4"
               },
@@ -378,12 +378,12 @@
                   ]
                 },
                 "children": [],
-                "id": 835,
+                "id": 898,
                 "name": "Block",
                 "src": "237:7:4"
               }
             ],
-            "id": 836,
+            "id": 899,
             "name": "FunctionDefinition",
             "src": "143:101:4"
           },
@@ -400,7 +400,7 @@
                       "constant": false,
                       "indexed": false,
                       "name": "previousOwners",
-                      "scope": 844,
+                      "scope": 907,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address[] memory",
@@ -419,17 +419,17 @@
                               "name": "address",
                               "type": "address"
                             },
-                            "id": 837,
+                            "id": 900,
                             "name": "ElementaryTypeName",
                             "src": "318:7:4"
                           }
                         ],
-                        "id": 838,
+                        "id": 901,
                         "name": "ArrayTypeName",
                         "src": "318:9:4"
                       }
                     ],
-                    "id": 839,
+                    "id": 902,
                     "name": "VariableDeclaration",
                     "src": "318:24:4"
                   },
@@ -438,7 +438,7 @@
                       "constant": false,
                       "indexed": false,
                       "name": "newOwners",
-                      "scope": 844,
+                      "scope": 907,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address[] memory",
@@ -457,27 +457,27 @@
                               "name": "address",
                               "type": "address"
                             },
-                            "id": 840,
+                            "id": 903,
                             "name": "ElementaryTypeName",
                             "src": "344:7:4"
                           }
                         ],
-                        "id": 841,
+                        "id": 904,
                         "name": "ArrayTypeName",
                         "src": "344:9:4"
                       }
                     ],
-                    "id": 842,
+                    "id": 905,
                     "name": "VariableDeclaration",
                     "src": "344:19:4"
                   }
                 ],
-                "id": 843,
+                "id": 906,
                 "name": "ParameterList",
                 "src": "317:47:4"
               }
             ],
-            "id": 844,
+            "id": 907,
             "name": "EventDefinition",
             "src": "291:74:4"
           },
@@ -488,7 +488,7 @@
               "isConstructor": false,
               "name": "transferOwnership",
               "payable": false,
-              "scope": 889,
+              "scope": 952,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "public"
@@ -500,7 +500,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "v",
-                      "scope": 888,
+                      "scope": 951,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint8[] memory",
@@ -519,17 +519,17 @@
                               "name": "uint8",
                               "type": "uint8"
                             },
-                            "id": 845,
+                            "id": 908,
                             "name": "ElementaryTypeName",
                             "src": "407:5:4"
                           }
                         ],
-                        "id": 846,
+                        "id": 909,
                         "name": "ArrayTypeName",
                         "src": "407:7:4"
                       }
                     ],
-                    "id": 847,
+                    "id": 910,
                     "name": "VariableDeclaration",
                     "src": "407:9:4"
                   },
@@ -537,7 +537,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "r",
-                      "scope": 888,
+                      "scope": 951,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes32[] memory",
@@ -556,17 +556,17 @@
                               "name": "bytes32",
                               "type": "bytes32"
                             },
-                            "id": 848,
+                            "id": 911,
                             "name": "ElementaryTypeName",
                             "src": "426:7:4"
                           }
                         ],
-                        "id": 849,
+                        "id": 912,
                         "name": "ArrayTypeName",
                         "src": "426:9:4"
                       }
                     ],
-                    "id": 850,
+                    "id": 913,
                     "name": "VariableDeclaration",
                     "src": "426:11:4"
                   },
@@ -574,7 +574,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "s",
-                      "scope": 888,
+                      "scope": 951,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes32[] memory",
@@ -593,17 +593,17 @@
                               "name": "bytes32",
                               "type": "bytes32"
                             },
-                            "id": 851,
+                            "id": 914,
                             "name": "ElementaryTypeName",
                             "src": "447:7:4"
                           }
                         ],
-                        "id": 852,
+                        "id": 915,
                         "name": "ArrayTypeName",
                         "src": "447:9:4"
                       }
                     ],
-                    "id": 853,
+                    "id": 916,
                     "name": "VariableDeclaration",
                     "src": "447:11:4"
                   },
@@ -611,7 +611,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "newOwners",
-                      "scope": 888,
+                      "scope": 951,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address[] memory",
@@ -630,22 +630,22 @@
                               "name": "address",
                               "type": "address"
                             },
-                            "id": 854,
+                            "id": 917,
                             "name": "ElementaryTypeName",
                             "src": "468:7:4"
                           }
                         ],
-                        "id": 855,
+                        "id": 918,
                         "name": "ArrayTypeName",
                         "src": "468:9:4"
                       }
                     ],
-                    "id": 856,
+                    "id": 919,
                     "name": "VariableDeclaration",
                     "src": "468:19:4"
                   }
                 ],
-                "id": 857,
+                "id": 920,
                 "name": "ParameterList",
                 "src": "397:96:4"
               },
@@ -656,7 +656,7 @@
                   ]
                 },
                 "children": [],
-                "id": 877,
+                "id": 940,
                 "name": "ParameterList",
                 "src": "629:0:4"
               },
@@ -668,11 +668,11 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 525,
+                      "referencedDeclaration": 588,
                       "type": "modifier (address[] memory)",
                       "value": "onlyNotEmpty"
                     },
-                    "id": 858,
+                    "id": 921,
                     "name": "Identifier",
                     "src": "517:12:4"
                   },
@@ -682,16 +682,16 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 856,
+                      "referencedDeclaration": 919,
                       "type": "address[] memory",
                       "value": "newOwners"
                     },
-                    "id": 859,
+                    "id": 922,
                     "name": "Identifier",
                     "src": "530:9:4"
                   }
                 ],
-                "id": 860,
+                "id": 923,
                 "name": "ModifierInvocation",
                 "src": "517:23:4"
               },
@@ -703,11 +703,11 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 511,
+                      "referencedDeclaration": 574,
                       "type": "modifier (uint8[] memory,bytes32[] memory,bytes32[] memory,bytes32)",
                       "value": "onlySigned"
                     },
-                    "id": 861,
+                    "id": 924,
                     "name": "Identifier",
                     "src": "549:10:4"
                   },
@@ -717,11 +717,11 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 847,
+                      "referencedDeclaration": 910,
                       "type": "uint8[] memory",
                       "value": "v"
                     },
-                    "id": 862,
+                    "id": 925,
                     "name": "Identifier",
                     "src": "560:1:4"
                   },
@@ -731,11 +731,11 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 850,
+                      "referencedDeclaration": 913,
                       "type": "bytes32[] memory",
                       "value": "r"
                     },
-                    "id": 863,
+                    "id": 926,
                     "name": "Identifier",
                     "src": "563:1:4"
                   },
@@ -745,11 +745,11 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 853,
+                      "referencedDeclaration": 916,
                       "type": "bytes32[] memory",
                       "value": "s"
                     },
-                    "id": 864,
+                    "id": 927,
                     "name": "Identifier",
                     "src": "566:1:4"
                   },
@@ -780,7 +780,7 @@
                               "typeString": "bytes1"
                             },
                             {
-                              "typeIdentifier": "t_contract$_TransferableMultiSig_$889",
+                              "typeIdentifier": "t_contract$_TransferableMultiSig_$952",
                               "typeString": "contract TransferableMultiSig"
                             },
                             {
@@ -795,11 +795,11 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 1498,
+                          "referencedDeclaration": 1503,
                           "type": "function () pure returns (bytes32)",
                           "value": "keccak256"
                         },
-                        "id": 865,
+                        "id": 928,
                         "name": "Identifier",
                         "src": "569:9:4"
                       },
@@ -833,7 +833,7 @@
                               "type": "type(bytes1)",
                               "value": "byte"
                             },
-                            "id": 866,
+                            "id": 929,
                             "name": "ElementaryTypeNameExpression",
                             "src": "579:4:4"
                           },
@@ -850,12 +850,12 @@
                               "type": "int_const 25",
                               "value": "0x19"
                             },
-                            "id": 867,
+                            "id": 930,
                             "name": "Literal",
                             "src": "584:4:4"
                           }
                         ],
-                        "id": 868,
+                        "id": 931,
                         "name": "FunctionCall",
                         "src": "579:10:4"
                       },
@@ -889,7 +889,7 @@
                               "type": "type(bytes1)",
                               "value": "byte"
                             },
-                            "id": 869,
+                            "id": 932,
                             "name": "ElementaryTypeNameExpression",
                             "src": "591:4:4"
                           },
@@ -906,12 +906,12 @@
                               "type": "int_const 0",
                               "value": "0"
                             },
-                            "id": 870,
+                            "id": 933,
                             "name": "Literal",
                             "src": "596:1:4"
                           }
                         ],
-                        "id": 871,
+                        "id": 934,
                         "name": "FunctionCall",
                         "src": "591:7:4"
                       },
@@ -921,11 +921,11 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 1523,
+                          "referencedDeclaration": 1528,
                           "type": "contract TransferableMultiSig",
                           "value": "this"
                         },
-                        "id": 872,
+                        "id": 935,
                         "name": "Identifier",
                         "src": "600:4:4"
                       },
@@ -935,11 +935,11 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 856,
+                          "referencedDeclaration": 919,
                           "type": "address[] memory",
                           "value": "newOwners"
                         },
-                        "id": 873,
+                        "id": 936,
                         "name": "Identifier",
                         "src": "606:9:4"
                       },
@@ -949,21 +949,21 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 397,
+                          "referencedDeclaration": 460,
                           "type": "uint256",
                           "value": "nonce"
                         },
-                        "id": 874,
+                        "id": 937,
                         "name": "Identifier",
                         "src": "617:5:4"
                       }
                     ],
-                    "id": 875,
+                    "id": 938,
                     "name": "FunctionCall",
                     "src": "569:54:4"
                   }
                 ],
-                "id": 876,
+                "id": 939,
                 "name": "ModifierInvocation",
                 "src": "549:75:4"
               },
@@ -1001,11 +1001,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 844,
+                              "referencedDeclaration": 907,
                               "type": "function (address[] memory,address[] memory)",
                               "value": "OwnershipTransferred"
                             },
-                            "id": 878,
+                            "id": 941,
                             "name": "Identifier",
                             "src": "639:20:4"
                           },
@@ -1015,11 +1015,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 400,
+                              "referencedDeclaration": 463,
                               "type": "address[] storage ref",
                               "value": "owners"
                             },
-                            "id": 879,
+                            "id": 942,
                             "name": "Identifier",
                             "src": "660:6:4"
                           },
@@ -1029,21 +1029,21 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 856,
+                              "referencedDeclaration": 919,
                               "type": "address[] memory",
                               "value": "newOwners"
                             },
-                            "id": 880,
+                            "id": 943,
                             "name": "Identifier",
                             "src": "668:9:4"
                           }
                         ],
-                        "id": 881,
+                        "id": 944,
                         "name": "FunctionCall",
                         "src": "639:39:4"
                       }
                     ],
-                    "id": 882,
+                    "id": 945,
                     "name": "ExpressionStatement",
                     "src": "639:39:4"
                   },
@@ -1066,11 +1066,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 400,
+                              "referencedDeclaration": 463,
                               "type": "address[] storage ref",
                               "value": "owners"
                             },
-                            "id": 883,
+                            "id": 946,
                             "name": "Identifier",
                             "src": "689:6:4"
                           },
@@ -1080,41 +1080,41 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 856,
+                              "referencedDeclaration": 919,
                               "type": "address[] memory",
                               "value": "newOwners"
                             },
-                            "id": 884,
+                            "id": 947,
                             "name": "Identifier",
                             "src": "698:9:4"
                           }
                         ],
-                        "id": 885,
+                        "id": 948,
                         "name": "Assignment",
                         "src": "689:18:4"
                       }
                     ],
-                    "id": 886,
+                    "id": 949,
                     "name": "ExpressionStatement",
                     "src": "689:18:4"
                   }
                 ],
-                "id": 887,
+                "id": 950,
                 "name": "Block",
                 "src": "629:85:4"
               }
             ],
-            "id": 888,
+            "id": 951,
             "name": "FunctionDefinition",
             "src": "371:343:4"
           }
         ],
-        "id": 889,
+        "id": 952,
         "name": "ContractDefinition",
         "src": "52:664:4"
       }
     ],
-    "id": 890,
+    "id": 953,
     "name": "SourceUnit",
     "src": "0:717:4"
   },
@@ -1124,5 +1124,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-10T21:16:10.579Z"
+  "updatedAt": "2017-12-10T22:25:31.105Z"
 }

@@ -345,7 +345,7 @@
       "absolutePath": "/home/js/Projects/js/signhash/signhash-contracts/contracts/TipsWallet.sol",
       "exportedSymbols": {
         "TipsWallet": [
-          1492
+          1497
         ]
       }
     },
@@ -358,73 +358,73 @@
             ".18"
           ]
         },
-        "id": 1463,
+        "id": 1468,
         "name": "PragmaDirective",
         "src": "0:23:8"
       },
       {
         "attributes": {
-          "SourceUnit": 607,
+          "SourceUnit": 670,
           "absolutePath": "/home/js/Projects/js/signhash/signhash-contracts/contracts/MultiSig/MultiSig.sol",
           "file": "./MultiSig/MultiSig.sol",
-          "scope": 1493,
+          "scope": 1498,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 1464,
+        "id": 1469,
         "name": "ImportDirective",
         "src": "25:33:8"
       },
       {
         "attributes": {
-          "SourceUnit": 890,
+          "SourceUnit": 953,
           "absolutePath": "/home/js/Projects/js/signhash/signhash-contracts/contracts/MultiSig/TransferableMultiSig.sol",
           "file": "./MultiSig/TransferableMultiSig.sol",
-          "scope": 1493,
+          "scope": 1498,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 1465,
+        "id": 1470,
         "name": "ImportDirective",
         "src": "59:45:8"
       },
       {
         "attributes": {
-          "SourceUnit": 822,
+          "SourceUnit": 885,
           "absolutePath": "/home/js/Projects/js/signhash/signhash-contracts/contracts/MultiSig/RecoverableMultiSig.sol",
           "file": "./MultiSig/RecoverableMultiSig.sol",
-          "scope": 1493,
+          "scope": 1498,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 1466,
+        "id": 1471,
         "name": "ImportDirective",
         "src": "105:44:8"
       },
       {
         "attributes": {
           "contractDependencies": [
-            606,
-            821,
-            889
+            669,
+            884,
+            952
           ],
           "contractKind": "contract",
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            1492,
-            821,
-            889,
-            606
+            1497,
+            884,
+            952,
+            669
           ],
           "name": "TipsWallet",
-          "scope": 1493
+          "scope": 1498
         },
         "children": [
           {
@@ -438,15 +438,15 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "MultiSig",
-                  "referencedDeclaration": 606,
+                  "referencedDeclaration": 669,
                   "type": "contract MultiSig"
                 },
-                "id": 1467,
+                "id": 1472,
                 "name": "UserDefinedTypeName",
                 "src": "175:8:8"
               }
             ],
-            "id": 1468,
+            "id": 1473,
             "name": "InheritanceSpecifier",
             "src": "175:8:8"
           },
@@ -461,15 +461,15 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "TransferableMultiSig",
-                  "referencedDeclaration": 889,
+                  "referencedDeclaration": 952,
                   "type": "contract TransferableMultiSig"
                 },
-                "id": 1469,
+                "id": 1474,
                 "name": "UserDefinedTypeName",
                 "src": "185:20:8"
               }
             ],
-            "id": 1470,
+            "id": 1475,
             "name": "InheritanceSpecifier",
             "src": "185:20:8"
           },
@@ -484,15 +484,15 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "RecoverableMultiSig",
-                  "referencedDeclaration": 821,
+                  "referencedDeclaration": 884,
                   "type": "contract RecoverableMultiSig"
                 },
-                "id": 1471,
+                "id": 1476,
                 "name": "UserDefinedTypeName",
                 "src": "207:19:8"
               }
             ],
-            "id": 1472,
+            "id": 1477,
             "name": "InheritanceSpecifier",
             "src": "207:19:8"
           },
@@ -503,7 +503,7 @@
               "isConstructor": true,
               "name": "TipsWallet",
               "payable": false,
-              "scope": 1492,
+              "scope": 1497,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "public"
@@ -515,7 +515,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_owners",
-                      "scope": 1491,
+                      "scope": 1496,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address[] memory",
@@ -534,17 +534,17 @@
                               "name": "address",
                               "type": "address"
                             },
-                            "id": 1473,
+                            "id": 1478,
                             "name": "ElementaryTypeName",
                             "src": "295:7:8"
                           }
                         ],
-                        "id": 1474,
+                        "id": 1479,
                         "name": "ArrayTypeName",
                         "src": "295:9:8"
                       }
                     ],
-                    "id": 1475,
+                    "id": 1480,
                     "name": "VariableDeclaration",
                     "src": "295:17:8"
                   },
@@ -552,7 +552,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_recoveryBlockOffset",
-                      "scope": 1491,
+                      "scope": 1496,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -565,17 +565,17 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 1476,
+                        "id": 1481,
                         "name": "ElementaryTypeName",
                         "src": "314:7:8"
                       }
                     ],
-                    "id": 1477,
+                    "id": 1482,
                     "name": "VariableDeclaration",
                     "src": "314:28:8"
                   }
                 ],
-                "id": 1478,
+                "id": 1483,
                 "name": "ParameterList",
                 "src": "294:49:8"
               },
@@ -586,7 +586,7 @@
                   ]
                 },
                 "children": [],
-                "id": 1489,
+                "id": 1494,
                 "name": "ParameterList",
                 "src": "486:0:8"
               },
@@ -598,11 +598,11 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 606,
+                      "referencedDeclaration": 669,
                       "type": "type(contract MultiSig)",
                       "value": "MultiSig"
                     },
-                    "id": 1479,
+                    "id": 1484,
                     "name": "Identifier",
                     "src": "367:8:8"
                   },
@@ -612,16 +612,16 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 1475,
+                      "referencedDeclaration": 1480,
                       "type": "address[] memory",
                       "value": "_owners"
                     },
-                    "id": 1480,
+                    "id": 1485,
                     "name": "Identifier",
                     "src": "376:7:8"
                   }
                 ],
-                "id": 1481,
+                "id": 1486,
                 "name": "ModifierInvocation",
                 "src": "367:17:8"
               },
@@ -633,11 +633,11 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 889,
+                      "referencedDeclaration": 952,
                       "type": "type(contract TransferableMultiSig)",
                       "value": "TransferableMultiSig"
                     },
-                    "id": 1482,
+                    "id": 1487,
                     "name": "Identifier",
                     "src": "393:20:8"
                   },
@@ -647,16 +647,16 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 1475,
+                      "referencedDeclaration": 1480,
                       "type": "address[] memory",
                       "value": "_owners"
                     },
-                    "id": 1483,
+                    "id": 1488,
                     "name": "Identifier",
                     "src": "414:7:8"
                   }
                 ],
-                "id": 1484,
+                "id": 1489,
                 "name": "ModifierInvocation",
                 "src": "393:29:8"
               },
@@ -668,11 +668,11 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 821,
+                      "referencedDeclaration": 884,
                       "type": "type(contract RecoverableMultiSig)",
                       "value": "RecoverableMultiSig"
                     },
-                    "id": 1485,
+                    "id": 1490,
                     "name": "Identifier",
                     "src": "431:19:8"
                   },
@@ -682,11 +682,11 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 1475,
+                      "referencedDeclaration": 1480,
                       "type": "address[] memory",
                       "value": "_owners"
                     },
-                    "id": 1486,
+                    "id": 1491,
                     "name": "Identifier",
                     "src": "451:7:8"
                   },
@@ -696,16 +696,16 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 1477,
+                      "referencedDeclaration": 1482,
                       "type": "uint256",
                       "value": "_recoveryBlockOffset"
                     },
-                    "id": 1487,
+                    "id": 1492,
                     "name": "Identifier",
                     "src": "460:20:8"
                   }
                 ],
-                "id": 1488,
+                "id": 1493,
                 "name": "ModifierInvocation",
                 "src": "431:50:8"
               },
@@ -716,22 +716,22 @@
                   ]
                 },
                 "children": [],
-                "id": 1490,
+                "id": 1495,
                 "name": "Block",
                 "src": "486:7:8"
               }
             ],
-            "id": 1491,
+            "id": 1496,
             "name": "FunctionDefinition",
             "src": "275:218:8"
           }
         ],
-        "id": 1492,
+        "id": 1497,
         "name": "ContractDefinition",
         "src": "152:384:8"
       }
     ],
-    "id": 1493,
+    "id": 1498,
     "name": "SourceUnit",
     "src": "0:537:8"
   },
@@ -741,5 +741,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-10T21:16:10.581Z"
+  "updatedAt": "2017-12-10T22:25:31.107Z"
 }
