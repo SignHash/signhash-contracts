@@ -17,25 +17,13 @@ declare module 'signhash' {
         hash: string,
         options?: TransactionOptions
       ): Promise<TransactionResult>;
+
       revoke(
         hash: string,
         options?: TransactionOptions
       ): Promise<TransactionResult>;
 
-      addProof(
-        method: string,
-        value: string,
-        options?: TransactionOptions
-      ): Promise<TransactionResult>;
-
-      removeProof(
-        method: string,
-        options?: TransactionOptions
-      ): Promise<TransactionResult>;
-
-      getSigners(hash: string, maxCount: number): Promise<Address[]>;
-
-      getProof(signer: Address, method: string): Promise<string>;
+      list(hash: string, maxCount: number): Promise<Address[]>;
     }
 
     interface SignedEvent {
@@ -48,13 +36,28 @@ declare module 'signhash' {
       signer: Address;
     }
 
-    interface ProofAddedEvent {
+    interface SignProof extends ContractBase {
+      add(
+        method: string,
+        value: string,
+        options?: TransactionOptions
+      ): Promise<TransactionResult>;
+
+      remove(
+        method: string,
+        options?: TransactionOptions
+      ): Promise<TransactionResult>;
+
+      get(signer: Address, method: string): Promise<string>;
+    }
+
+    interface AddedEvent {
       signer: Address;
       method: string;
       value: string;
     }
 
-    interface ProofRemovedEvent {
+    interface RemovedEvent {
       signer: Address;
       method: string;
     }
@@ -154,6 +157,10 @@ declare module 'signhash' {
 
     interface SignHashContract extends Contract<SignHash> {
       'new'(options?: TransactionOptions): Promise<SignHash>;
+    }
+
+    interface SignProofContract extends Contract<SignProof> {
+      'new'(options?: TransactionOptions): Promise<SignProof>;
     }
 
     interface TipsWalletContract extends Contract<TipsWallet> {

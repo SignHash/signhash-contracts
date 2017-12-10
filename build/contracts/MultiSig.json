@@ -796,7 +796,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 1501,
+                              "referencedDeclaration": 1507,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -1211,7 +1211,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 1492,
+                              "referencedDeclaration": 1498,
                               "type": "function () pure returns (bytes32)",
                               "value": "keccak256"
                             },
@@ -1450,7 +1450,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 1501,
+                                      "referencedDeclaration": 1507,
                                       "type": "function (bool) pure",
                                       "value": "require"
                                     },
@@ -1511,7 +1511,7 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 1491,
+                                              "referencedDeclaration": 1497,
                                               "type": "function (bytes32,uint8,bytes32,bytes32) pure returns (address)",
                                               "value": "ecrecover"
                                             },
@@ -1884,7 +1884,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 1501,
+                              "referencedDeclaration": 1507,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -2063,7 +2063,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 1498,
+                                  "referencedDeclaration": 1504,
                                   "type": "msg",
                                   "value": "msg"
                                 },
@@ -2158,7 +2158,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 1498,
+                                          "referencedDeclaration": 1504,
                                           "type": "msg",
                                           "value": "msg"
                                         },
@@ -2189,7 +2189,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 1498,
+                                          "referencedDeclaration": 1504,
                                           "type": "msg",
                                           "value": "msg"
                                         },
@@ -2667,7 +2667,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 1492,
+                          "referencedDeclaration": 1498,
                           "type": "function () pure returns (bytes32)",
                           "value": "keccak256"
                         },
@@ -2793,7 +2793,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 1513,
+                          "referencedDeclaration": 1519,
                           "type": "contract MultiSig",
                           "value": "this"
                         },
@@ -3011,7 +3011,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 1501,
+                              "referencedDeclaration": 1507,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -3181,5 +3181,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-09T23:00:14.495Z"
+  "updatedAt": "2017-12-10T21:16:10.578Z"
 }
