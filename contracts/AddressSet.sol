@@ -24,8 +24,6 @@ library AddressSet {
         internal
         returns (bool)
     {
-        require(element != address(0));
-
         if (self.head == address(0)) { // empty list
             self.head = element;
         } else if (!contains(self, element)) { // not existing
@@ -48,8 +46,6 @@ library AddressSet {
         internal
         returns (bool)
     {
-        require(element != address(0));
-
         Link storage link = self.links[element];
 
         if (link.previous != address(0)) { // middle or tail
@@ -121,6 +117,26 @@ library AddressSet {
             self.links[element].previous != address(0);
     }
 
+    function toArray(
+        Data storage self,
+        uint256 maxCount
+    )
+        internal
+        view
+        returns (address[])
+    {
+        maxCount = min(maxCount, self.count);
+        address[] memory array = new address[](maxCount);
+
+        address current = self.head;
+        for (uint256 i = 0; i < maxCount; i++) {
+            array[i] = current;
+            current = self.links[current].next;
+        }
+
+        return array;
+    }
+
     //--- Private mutable functions
     function safeIncrement(Data storage self) private {
         assert(self.count + 1 > self.count);
@@ -130,6 +146,10 @@ library AddressSet {
     function safeDecrement(Data storage self) private {
         assert(self.count > 0);
         self.count--;
+    }
+
+    function min(uint256 a, uint256 b) private pure returns (uint256) {
+        return a < b ? a : b;
     }
 }
 

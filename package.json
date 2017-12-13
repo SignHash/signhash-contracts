@@ -24,6 +24,8 @@
     "test:addressset": "truffle test test/AddressSet/Test*.sol",
     "test:signhash": "run-s compile:ts test:signhash:js",
     "test:signhash:js": "truffle test test/signhash.test.js",
+    "test:signproof": "run-s compile:ts test:signproof:js",
+    "test:signproof:js": "truffle test test/signproof.test.js",
     "test:tipswallet": "run-s compile:ts test:tipswallet:js",
     "test:tipswallet:js": "truffle test test/tipswallet.test.js",
     "migrate": "truffle migrate --reset --network testrpc",
