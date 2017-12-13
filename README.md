@@ -63,7 +63,7 @@ npm run seed
 
 ## Configuration
 
-Configuration in documented in [Truffle docs](http://truffleframework.com/docs/advanced/configuration).
+Configuration is documented in [Truffle docs](http://truffleframework.com/docs/advanced/configuration).
 
 ## Contributing
 
@@ -74,4 +74,4 @@ TypeScript code is auto-formatted in git pre-commit hook and follow [prettier co
 
 ## Licensing
 
-The code in this project is licensed under MIT license.
+The code in this project is licensed under the MIT license.
